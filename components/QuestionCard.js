@@ -10,6 +10,8 @@ import {
 import Styles from './Styles.js';
 
 class QuestionCard extends Component {
+  
+  
   constructor(props) {
     super(props);
     // console.log('constructor')
@@ -47,7 +49,7 @@ class QuestionCard extends Component {
           // console.log(`waitingqueue in pan: ${props.waitingQueue}`)
           if (this.props.waitingQueue !== 0) {
             // console.log(66666)
-            this.props.onSwipeRight()
+            this.props.onSwipeRight(this.resetPosition)
             // Animated.spring(this.state.pan, {
             //   toValue: 0,
             // }).start()
@@ -60,6 +62,12 @@ class QuestionCard extends Component {
         } 
       }
     })
+  }
+
+  resetPosition = () => {
+    Animated.spring(this.state.pan, {
+      toValue: 0,
+    }).start()
   }
 
   componentWillUnmount() {
@@ -82,7 +90,7 @@ class QuestionCard extends Component {
           {
             rotate: pan.x.interpolate({
               inputRange: [-150, 0, 150], 
-              outputRange: ["-20deg", "0deg", "20deg"]
+              outputRange: ["0deg", "0deg", "0deg"]
             })
           }
         ]

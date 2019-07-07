@@ -36,10 +36,7 @@ export default class CardStack extends Component {
     let start = this.state.users.slice(0, index);
     console.log(start)
     let end = this.state.users.slice(index + 1);
-    console.log(end)
-    console.log(89898989)
     console.log(start.concat(end))
-    console.log(98765)
     this.setState({
       users: start.concat(end),
     });

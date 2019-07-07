@@ -37,7 +37,7 @@ class QuestionStack extends Component {
     }))
   }
 
-  handleSwipeRight = () => {
+  handleSwipeRight = (cb) => {
     const { questionsOnWaiting } = this.state
     const questionReadyToBack = questionsOnWaiting[0]
     
@@ -46,7 +46,7 @@ class QuestionStack extends Component {
     this.setState(({ questionsInUse, questionsOnWaiting }) => ({
       questionsInUse: [...questionsInUse, questionReadyToBack],
       questionsOnWaiting: questionsOnWaiting.filter((q, i) => i !== 0)
-    }))
+    }), cb())
   }
 
   render() {
