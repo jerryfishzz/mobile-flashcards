@@ -8,6 +8,8 @@ import QuestionCard from './components/QuestionCard';
 import { createStackNavigator, createAppContainer } from 'react-navigation';
 import QuestionStack from './components/QuestionStack';
 import CardStack from './components/CardStack';
+import { MyCarousel } from './components/Carousel';
+import SubmitBtn from './components/SubmitBtn';
 
 
 const Stack = createStackNavigator({
@@ -26,9 +28,11 @@ export default function App() {
     <Provider store={createStore(reducer)}>
       <View style={styles.container}>
         {/* <MainNavigator /> */}
-        {/* <QuestionStack /> */}
-        {/* <CardStack /> */}
         <QuestionStack />
+        {/* <CardStack /> */}
+        {/* <QuestionStack /> */}
+        {/* <MyCarousel /> */}
+        {/* <SubmitBtn /> */}
       </View>
     </Provider>
   )

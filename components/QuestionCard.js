@@ -5,123 +5,102 @@ import {
   Image,
   PanResponder,
   Animated,
+  TouchableOpacity,
 } from 'react-native'
 // import { getDeck } from '../utils/api';
 import Styles from './Styles.js';
+import FlipCard from './FlipCard';
 
 class QuestionCard extends Component {
-  
-  
   constructor(props) {
-    super(props);
-    // console.log('constructor')
-    // console.log(props.question)
-    // console.log(`waitingQueue: ${props.waitingQueue}`)
+    super(props)
+    
     this.state = {
-      pan: new Animated.ValueXY()
-    };
+      correctness : null,
+    }
 
-    this.panResponder = PanResponder.create({
-      onMoveShouldSetResponderCapture: () => true,
-      onMoveShouldSetPanResponderCapture: () => true,
-      onPanResponderGrant: (e, gestureState) => {
-        this.state.pan.setValue({x: 0, y: 0});
-      },
-      onPanResponderMove: Animated.event([
-        null, {dx: this.state.pan.x, dy: this.state.pan.y}
-      ]),
-      onPanResponderRelease: (e, {vx, vy}) => {
-        if (this.state.pan.x._value < -150) {
-          // console.log(waitingQueue)
-          if (this.props.index !== 0) {
-            // console.log(55555)
-            this.props.onSwipeLeft(this.props.index)
-          } else {
-            // console.log(7777777)
-            Animated.spring(this.state.pan, {
-              toValue: 0,
-            }).start()
-          }
-        } 
-        
-        if (this.state.pan.x._value > 150) {
-          // console.log(8888888)
-          // console.log(`waitingqueue in pan: ${props.waitingQueue}`)
-          if (this.props.waitingQueue !== 0) {
-            // console.log(66666)
-            this.props.onSwipeRight(this.resetPosition)
-            // Animated.spring(this.state.pan, {
-            //   toValue: 0,
-            // }).start()
-          } else {
-            // console.log(7777777)
-            Animated.spring(this.state.pan, {
-              toValue: 0,
-            }).start()
-          }
-        } 
-      }
+    this.value = 0
+    this.animatedValue = new Animated.Value(0)
+    this.animatedValue.addListener(({ value }) => {
+      this.value = value
+    })
+
+    this.frontInterpolate = this.animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['0deg', '180deg']
+    })
+    this.backInterpolate = this.animatedValue.interpolate({
+      inputRange: [0, 180],
+      outputRange: ['180deg', '360deg']
     })
   }
 
-  resetPosition = () => {
-    Animated.spring(this.state.pan, {
-      toValue: 0,
-    }).start()
-  }
-
   componentWillUnmount() {
-    this.state.pan.x.removeAllListeners();
-    this.state.pan.y.removeAllListeners();
+    this.animatedValue.removeAllListeners()
   }
 
-  getMainCardStyle() {
-    let {pan} = this.state;
+  flipCard = () => {
+    if (this.value >= 90) {
+      Animated.spring(this.animatedValue, {
+        toValue: 0,
+        friction: 8,
+        tension: 10
+      }).start()
+    } else {
+      Animated.spring(this.animatedValue, {
+        toValue: 180,
+        friction: 8,
+        tension: 10
+      }).start()
+    }
+  }
 
-    return [
-      Styles.mainCard,
-      {position: 'absolute'},
-      {left: -175},
-      {top: -250},
-      {
-        transform: [
-          {translateX: pan.x}, 
-          {translateY: pan.y},
-          {
-            rotate: pan.x.interpolate({
-              inputRange: [-150, 0, 150], 
-              outputRange: ["0deg", "0deg", "0deg"]
-            })
-          }
-        ]
-      },
-      {
-        opacity: pan.x.interpolate({
-          inputRange: [-150, 0, 150], 
-          outputRange: [0.5, 1, 0.5]
-        })
-      }
-    ];
+  handlePress = correctness => {
+    console.log('press')
+    this.setState({correctness})
   }
 
   render() {
-    console.log('render')
-    const { question, answer } = this.props
+    const { correctness } = this.state
+    const { item } = this.props
+console.log(correctness)
+    const frontAnimatedStyle = {
+      transform: [
+        {rotateX: this.frontInterpolate}
+      ]
+    }
+    const backAnimatedStyle = {
+      transform: [
+        {rotateX: this.backInterpolate}
+      ]
+    }
+    const zFront = correctness === null ? {zIndex: 1} : null 
+   
+    if (correctness !== null) {
+      return (
+        <TouchableOpacity 
+          onPress={this.flipCard}
+        >
+          <FlipCard 
+            item={item}
+            frontAnimatedStyle={frontAnimatedStyle}
+            backAnimatedStyle={backAnimatedStyle}
+            correctness={correctness}
+            onPress={this.handlePress}
+          />
+        </TouchableOpacity>
+      )
+    }
 
     return (
-      <Animated.View 
-        style={this.getMainCardStyle()} 
-        {...this.panResponder.panHandlers}
-      >
-        <View style={Styles.card}>
-          <Image style={Styles.cardImage}/>
-          <View style={Styles.cardText}>
-            <Text style={Styles.cardTextMain}>{question}</Text>
-            <Text style={Styles.cardTextSecondary}>{answer ? 'True' : 'False'}</Text>
-          </View>
-        </View>
-      </Animated.View>
-      
+      <FlipCard 
+        item={item}
+        frontAnimatedStyle={frontAnimatedStyle}
+        backAnimatedStyle={backAnimatedStyle}
+        correctness={correctness}
+        zFront={zFront}
+        onPress={this.handlePress}
+      />
     )
   }
 }

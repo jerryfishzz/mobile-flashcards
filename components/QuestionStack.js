@@ -1,15 +1,18 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList } from 'react-native'
+import { View, Text, FlatList, Platform, Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import QuestionCard from './QuestionCard';
 import Styles from './Styles.js';
 import * as R from 'ramda'
 import { getDeck } from '../utils/api';
+import Carousel from 'react-native-snap-carousel';
+
+const IS_IOS = Platform.OS === 'ios';
+const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 
 class QuestionStack extends Component {
   state = {
-    questionsInUse: [],
-    questionsOnWaiting: []
+    questionsInUse: []
   }
 
   componentDidMount() {
@@ -19,66 +22,28 @@ class QuestionStack extends Component {
 
     getDeck('CommonSense')
       .then(deck => {
-        const questions = R.reverse(deck.questions)
+        const questions = deck.questions
         this.setState({questionsInUse: questions})
       })
   }
 
-  handleSwipeLeft = (index) => {
-    const { questionsInUse } = this.state
-    const newQuestionsInUse = questionsInUse.slice(0, index)
-    
-    this.setState(prevState => ({
-      questionsInUse: newQuestionsInUse,
-      questionsOnWaiting: [
-        questionsInUse[index],
-        ...prevState.questionsOnWaiting
-      ]
-    }))
-  }
-
-  handleSwipeRight = (cb) => {
-    const { questionsOnWaiting } = this.state
-    const questionReadyToBack = questionsOnWaiting[0]
-    
-    // if (questionsOnWaiting.length === 0) return null
-
-    this.setState(({ questionsInUse, questionsOnWaiting }) => ({
-      questionsInUse: [...questionsInUse, questionReadyToBack],
-      questionsOnWaiting: questionsOnWaiting.filter((q, i) => i !== 0)
-    }), cb())
-  }
-
   render() {
-    const { questionsInUse, questionsOnWaiting } = this.state
-    // console.log(111111111)
-    const waitingQueue = questionsOnWaiting.length
-    // console.log(waitingQueue)
+    const { questionsInUse } = this.state
 
     if (questionsInUse.length === 0) {
       return <View><Text>Loading</Text></View>
     }
 
     return (
-      <FlatList 
-        style={Styles.cardContainer}
-        contentContainerStyle={Styles.cardStack}
-        data={questionsInUse}
-        renderItem={({item, index}) => {
-          {/* console.log(waitingQueue) */}
-          return (
-            <QuestionCard
-              {...item}
-              index={index}
-              waitingQueue={waitingQueue}
-              onSwipeLeft={this.handleSwipeLeft}
-              onSwipeRight={this.handleSwipeRight}
-            />
-          )
-        }}
-        keyExtractor={(item, index) => index.toString()}
-        scrollEnabled={false}
-      /> 
+      <Carousel
+        ref={(c) => {this._carousel = c}}
+        data={this.state.questionsInUse}
+        renderItem={({item, index}) => (
+          <QuestionCard item={item} />
+        )}
+        sliderWidth={viewportWidth}
+        itemWidth={viewportHeight}
+      />
     )
   }
 }
