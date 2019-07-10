@@ -28,3 +28,7 @@ export function getDeck(deckId) {
       return decks[deckId]
     })
 }
+
+export function addQuestionToDeck(newDecks) {
+  return AsyncStorage.setItem(FLASHCARD_KEY, JSON.stringify(newDecks))
+}

@@ -1,5 +1,12 @@
 import React, { Component } from 'react'
-import { View, Text, FlatList, Platform, Dimensions } from 'react-native'
+import { 
+  View, 
+  Text, 
+  FlatList, 
+  Platform, 
+  Dimensions,
+  Button
+} from 'react-native'
 import { connect } from 'react-redux'
 import QuestionCard from './QuestionCard';
 import Styles from './Styles.js';
@@ -7,37 +14,48 @@ import * as R from 'ramda'
 import { getDeck } from '../utils/api';
 import Carousel from 'react-native-snap-carousel';
 
-const IS_IOS = Platform.OS === 'ios';
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 
 class QuestionStack extends Component {
+  static navigationOptions = ({ navigation }) => {
+    const { deckId } =  navigation.state.params
+
+    return {
+      headerTitle: 'Questions',
+      headerRight: (
+        <Button
+          onPress={() => navigation.navigate(
+            'NewQuestion',
+            {deckId}
+          )}
+          title="New"
+          color="#000"
+        />
+      ),
+    };
+  };
+
   state = {
-    questionsInUse: []
+    questions: []
   }
 
   componentDidMount() {
-    // const { questions } = this.props
+    const { questions } = this.props
 
-    // this.setState({questionsInUse: questions})
-
-    getDeck('CommonSense')
-      .then(deck => {
-        const questions = deck.questions
-        this.setState({questionsInUse: questions})
-      })
+    this.setState({questions})
   }
 
   render() {
-    const { questionsInUse } = this.state
+    const { questions } = this.state
 
-    if (questionsInUse.length === 0) {
+    if (questions.length === 0) {
       return <View><Text>Loading</Text></View>
     }
 
     return (
       <Carousel
         ref={(c) => {this._carousel = c}}
-        data={this.state.questionsInUse}
+        data={questions}
         renderItem={({item, index}) => (
           <QuestionCard item={item} />
         )}
@@ -48,17 +66,13 @@ class QuestionStack extends Component {
   }
 }
 
-// const mapStateToProps = (decks, { navigation }) => {
-//   const { deckId } =  navigation.state.params
-//   // console.log(deckId)
-//   // console.log(2222222)
+const mapStateToProps = (decks, { navigation }) => {
+  const { deckId } =  navigation.state.params
 
-//   return {
-//     decks,
-//     questions: R.reverse(decks[deckId].questions)
-//   }
-// }
+  return {
+    decks,
+    questions: decks[deckId].questions,
+  }
+}
 
-// export default connect(mapStateToProps)(QuestionStack)
-
-export default QuestionStack
+export default connect(mapStateToProps)(QuestionStack)

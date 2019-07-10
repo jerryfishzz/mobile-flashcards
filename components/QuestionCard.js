@@ -10,7 +10,6 @@ import {
 // import { getDeck } from '../utils/api';
 import Styles from './Styles.js';
 import FlipCard from './FlipCard';
-import idGenerator from 'react-id-generator';
 
 class QuestionCard extends Component {
   constructor(props) {
@@ -64,14 +63,6 @@ class QuestionCard extends Component {
   render() {
     const { correctness } = this.state
     const { item } = this.props
-
-
-
-console.log(correctness)
-console.log(idGenerator())
-
-
-
 
     const frontAnimatedStyle = {
       transform: [

@@ -10,7 +10,8 @@ import QuestionStack from './components/QuestionStack';
 import CardStack from './components/CardStack';
 import { MyCarousel } from './components/Carousel';
 import SubmitBtn from './components/SubmitBtn';
-
+import NewQuestion from './components/NewQuestion'
+import Test from './components/Test';
 
 const Stack = createStackNavigator({
   Home: {
@@ -18,6 +19,9 @@ const Stack = createStackNavigator({
   },
   QuestionStack: {
     screen: QuestionStack
+  },
+  NewQuestion: {
+    screen: NewQuestion
   }
 })
 
@@ -27,8 +31,9 @@ export default function App() {
   return (
     <Provider store={createStore(reducer)}>
       <View style={styles.container}>
-        {/* <MainNavigator /> */}
-        <QuestionStack />
+        <MainNavigator />
+        {/* <Test /> */}
+        {/* <QuestionStack /> */}
         {/* <CardStack /> */}
         {/* <QuestionStack /> */}
         {/* <MyCarousel /> */}
