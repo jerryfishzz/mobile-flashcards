@@ -7,11 +7,6 @@ function decks(state = {}, action) {
         ...state,
         ...action.decks
       }
-    case ADD_DECK:
-      return {
-        ...state,
-        ...action.deck
-      }
     case ADD_QUESTION:
       return {
         ...state,
@@ -22,6 +17,11 @@ function decks(state = {}, action) {
             action.newQuestion
           ]
         }
+      }
+    case ADD_DECK:
+      return {
+        ...state,
+        [action.key]: action.entry
       }
     default:
       break;

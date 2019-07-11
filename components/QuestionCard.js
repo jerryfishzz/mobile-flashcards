@@ -56,7 +56,7 @@ class QuestionCard extends Component {
   }
 
   handlePress = correctness => {
-    console.log('press')
+    // console.log('press')
     this.setState({correctness})
   }
 

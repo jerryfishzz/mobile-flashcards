@@ -11,7 +11,7 @@ import { connect } from 'react-redux'
 const DeckCard = ({ id, deck, navigation }) => {
   return (
     <TouchableOpacity 
-      onPress={() => navigation.navigate('QuestionStack', { deckId: id })}
+      onPress={() => navigation.navigate('Deck', { deckId: id })}
     >
       <View style={styles.item}>
         <Text>{id}</Text>

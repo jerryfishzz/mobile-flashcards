@@ -11,9 +11,10 @@ import {
 } from 'react-native'
 import { white, purple, green, red, gray } from '../utils/colors'
 import { connect } from 'react-redux'
-import { addQuestion } from '../actions';
-import { addQuestionToDeck } from '../utils/api';
+import { addQuestion, addDeck } from '../actions';
+import { addQuestionToDeck, addDeckToApp } from '../utils/api';
 import { NavigationActions } from 'react-navigation';
+import * as R from 'ramda'
 
 function SubmitBtn({ submitting, onPress }) {
   return (
@@ -32,53 +33,38 @@ function SubmitBtn({ submitting, onPress }) {
   )
 }
 
-class NewQuestion extends Component {
+class NewDeck extends Component {
   state = {
-    question: '',
-    answer: true,
-    explaination: '',
+    deck: '',
     submitting: false
   }
 
-  toggleSwitch = () => {
-    this.setState(prevState => ({
-      answer: !prevState.switchValue
-    }))
-  }
-
   submit = () => {
-    const { decks, deckId, dispatch } = this.props,
-          { question, answer, explaination } = this.state,
-          newQuestion = {
-            question,
-            type: 'judgement',
-            answer,
-            explaination
-          }
+    const { deck } = this.state
+    const { dispatch } = this.props
 
-    const newDecks = {
-      ...decks,
-      [deckId]: {
-        ...decks[deckId],
-        questions: [
-          ...decks[deckId].questions,
-          newQuestion
-        ]
-      }
+    const noSpace = n => n !== ' '
+    const noSapceArray = R.filter(noSpace)(deck)
+    const key = R.join('')(noSapceArray)
+    
+
+    const entry = {
+      title: deck,
+      questions: []
     }
 
     this.setState(
       {submitting: true}, // Need to check work or not
       () => {
-        addQuestionToDeck(newDecks)
+        addDeckToApp({ entry, key })
           .then(() => {
-            dispatch(addQuestion(deckId, newQuestion))
+            dispatch(addDeck(key, entry))
             this.setState({submitting: false})
           })
       }
     )
     
-    this.props.navigation.dispatch(NavigationActions.navigate({ routeName: "Home" }))
+    this.props.navigation.dispatch(NavigationActions.navigate({ routeName: "Decks" }))
     // this.props.navigation.dispatch(NavigationActions.back())
 
     // console.log(newDecks)
@@ -93,7 +79,7 @@ class NewQuestion extends Component {
           justifyContent: "flex-end",
         }}
       >
-        <Text>Question</Text>
+        <Text>New Deck</Text>
         <View 
           style={{
             borderBottomColor: '#000000',
@@ -103,29 +89,8 @@ class NewQuestion extends Component {
           <TextInput
             multiline={true}
             maxLength = {60}
-            onChangeText={(question) => this.setState({question})}
-            value={this.state.question}
-            style={{width: 100, height: 20}}
-          />
-        </View>
-        <Text>Answer</Text>
-        <Switch
-          style={{marginTop:30}}
-          onValueChange = {this.toggleSwitch}
-          value = {this.state.answer}
-        />
-        <Text>Explaination</Text>
-        <View 
-          style={{
-            borderBottomColor: '#000000',
-            borderBottomWidth: 1,
-          }}
-        >
-          <TextInput
-            multiline={true}
-            maxLength = {60}
-            onChangeText={(explaination) => this.setState({explaination})}
-            value={this.state.explaination}
+            onChangeText={(deck) => this.setState({deck})}
+            value={this.state.deck}
             style={{width: 100, height: 20}}
           />
         </View>
@@ -135,15 +100,15 @@ class NewQuestion extends Component {
   }
 }
 
-const mapStateToProps = (decks, { navigation }) => {
-  const { deckId } =  navigation.state.params
+// const mapStateToProps = (decks, { navigation }) => {
+//   const { deckId } =  navigation.state.params
 
-  return {
-    decks,
-    questions: decks[deckId].questions,
-    deckId
-  }
-}
+//   return {
+//     decks,
+//     questions: decks[deckId].questions,
+//     deckId
+//   }
+// }
 
 const styles = StyleSheet.create({
   container: {
@@ -189,4 +154,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect(mapStateToProps)(NewQuestion)
+export default connect()(NewDeck)

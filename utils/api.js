@@ -32,3 +32,9 @@ export function getDeck(deckId) {
 export function addQuestionToDeck(newDecks) {
   return AsyncStorage.setItem(FLASHCARD_KEY, JSON.stringify(newDecks))
 }
+
+export function addDeckToApp({ entry, key }) {
+  return AsyncStorage.mergeItem(FLASHCARD_KEY, JSON.stringify({
+    [key]: entry
+  }))
+}

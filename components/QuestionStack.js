@@ -17,24 +17,6 @@ import Carousel from 'react-native-snap-carousel';
 const { width: viewportWidth, height: viewportHeight } = Dimensions.get('window');
 
 class QuestionStack extends Component {
-  static navigationOptions = ({ navigation }) => {
-    const { deckId } =  navigation.state.params
-
-    return {
-      headerTitle: 'Questions',
-      headerRight: (
-        <Button
-          onPress={() => navigation.navigate(
-            'NewQuestion',
-            {deckId}
-          )}
-          title="New"
-          color="#000"
-        />
-      ),
-    };
-  };
-
   state = {
     questions: []
   }
