@@ -1,7 +1,7 @@
 'use strict';
 import React, { Component } from 'react';
 import { FlatList } from 'react-native';
-import Styles from './Styles.js';
+import Styles from '../components/Styles.js';
 import Card from './Card.js';
 
 export default class CardStack extends Component {

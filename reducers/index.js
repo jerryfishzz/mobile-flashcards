@@ -1,4 +1,9 @@
-import { RECEIVE_DECKS, ADD_DECK, ADD_QUESTION } from "../actions";
+import { 
+  RECEIVE_DECKS, 
+  ADD_DECK, 
+  ADD_QUESTION, 
+  REMOVE_DECK 
+} from "../actions";
 
 function decks(state = {}, action) {
   switch (action.type) {
@@ -21,8 +26,13 @@ function decks(state = {}, action) {
     case ADD_DECK:
       return {
         ...state,
-        [action.key]: action.entry
+        ...action.newDeck
       }
+    case REMOVE_DECK:
+      return Object.keys(state).filter(item => item !== action.deckId)
+        .reduce((acc, cur) => {
+          return {...acc, [cur]: state[cur]}
+        }, {})
     default:
       break;
   }

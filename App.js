@@ -1,36 +1,56 @@
 import React from 'react'
-import { StyleSheet, Text, View, Platform } from 'react-native'
-import Dashboard from './components/Dashboard'
+import { StyleSheet, View, Platform, StatusBar } from 'react-native'
 import { createStore } from 'redux'
-import reducer from './reducers'
 import { Provider } from 'react-redux'
-import QuestionCard from './components/QuestionCard';
 import { 
   createStackNavigator, 
   createAppContainer,
   createBottomTabNavigator, 
-} from 'react-navigation';
-import QuestionStack from './components/QuestionStack';
-import CardStack from './components/CardStack';
-import { MyCarousel } from './components/Carousel';
-import SubmitBtn from './components/SubmitBtn';
+} from 'react-navigation'
+import Constants from 'expo-constants'
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons'
+
+import reducer from './reducers'
+import { white, purple } from './utils/colors'
+import Dashboard from './components/Dashboard'
+import QuestionStack from './components/QuestionStack'
 import NewQuestion from './components/NewQuestion'
-import Test from './components/Test';
-import Deck from './components/Deck';
-import NewDeck from './components/NewDeck';
-import { white, purple, green, red, gray } from './utils/colors'
+import Test from './components/Test'
+import Deck from './components/Deck'
+import NewDeck from './components/NewDeck'
+import middleware from './middleware'
+
+function FlashcardStatusBar({ backgroundColor, ...props }) {
+  return (
+    <View style={{backgroundColor, height: Constants.statusBarHeight}}>
+      <StatusBar translucent backgroundColor={backgroundColor} {...props} />
+    </View>
+  )
+}
 
 const Tabs = createBottomTabNavigator({
   Decks: {
     screen: Dashboard,
     navigationOptions: {
       tabBarLabel: 'Decks',
+      tabBarIcon: ({ tintColor }) => 
+        <MaterialCommunityIcons 
+          name='library-books' 
+          size={30} 
+          color={tintColor} 
+        />
     }
   },
   NewDeck: {
     screen: NewDeck,
     navigationOptions: {
       tabBarLabel: 'New Deck',
+      tabBarIcon: ({ tintColor }) => 
+        <MaterialIcons 
+          name='library-add' 
+          size={30} 
+          color={tintColor} 
+        />
     }
   },
 }, {
@@ -57,10 +77,13 @@ const TabsContainer = createAppContainer(Tabs)
 
 const Stack = createStackNavigator({
   Home: {
-    screen: TabsContainer
+    screen: TabsContainer,
+    navigationOptions: {
+      header: null,
+    },
   },
   Deck: {
-    screen: Deck
+    screen: Deck,
   },
   QuestionStack: {
     screen: QuestionStack
@@ -68,28 +91,31 @@ const Stack = createStackNavigator({
   NewQuestion: {
     screen: NewQuestion
   }
+}, {
+  defaultNavigationOptions: {
+    headerTintColor: white,
+    headerStyle: {
+      backgroundColor: purple
+    }
+  }
 })
 
 const MainNavigator = createAppContainer(Stack)
 
 export default function App() {
   return (
-    <Provider store={createStore(reducer)}>
-      <View style={styles.container}>
+    <Provider store={createStore(reducer, middleware)}>
+      <View style={styles.flex}>
+        <FlashcardStatusBar backgroundColor={purple} barStyle='light-content' />
         <MainNavigator />
         {/* <Test /> */}
-        {/* <QuestionStack /> */}
-        {/* <CardStack /> */}
-        {/* <QuestionStack /> */}
-        {/* <MyCarousel /> */}
-        {/* <SubmitBtn /> */}
       </View>
     </Provider>
   )
 }
 
 const styles = StyleSheet.create({
-  container: {
+  flex: {
     flex: 1,
   },
 })

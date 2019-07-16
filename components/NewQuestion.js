@@ -5,34 +5,27 @@ import {
   TextInput, 
   Switch,
   KeyboardAvoidingView,
-  TouchableOpacity,
-  Platform,
-  StyleSheet
+  StyleSheet,
+  ScrollView,
 } from 'react-native'
-import { white, purple, green, red, gray } from '../utils/colors'
 import { connect } from 'react-redux'
-import { addQuestion } from '../actions';
-import { addQuestionToDeck } from '../utils/api';
 import { NavigationActions } from 'react-navigation';
 
-function SubmitBtn({ submitting, onPress }) {
-  return (
-    <TouchableOpacity
-      style={[
-        Platform.OS === 'ios' 
-          ? styles.iosSubmitBtn 
-          : styles.andriodSubmitBtn,
-        {marginBottom: 100}
-      ]}
-      onPress={onPress}
-      disabled={submitting}
-    >
-      <Text style={styles.submitBtnText}>SUBMIT</Text>
-    </TouchableOpacity>
-  )
-}
+import { 
+  white, 
+  green, 
+  red, 
+  gray, 
+  lightGray 
+} from '../utils/colors'
+import { handleAddQuestion } from '../actions';
+import UniversalBtn from './UniversalBtn';
 
 class NewQuestion extends Component {
+  static navigationOptions = () => ({
+    title: 'Create Question'
+  })
+
   state = {
     question: '',
     answer: true,
@@ -42,13 +35,14 @@ class NewQuestion extends Component {
 
   toggleSwitch = () => {
     this.setState(prevState => ({
-      answer: !prevState.switchValue
+      answer: !prevState.answer
     }))
   }
 
   submit = () => {
-    const { decks, deckId, dispatch } = this.props,
+    const { deckId, dispatch, goBack } = this.props,
           { question, answer, explaination } = this.state,
+
           newQuestion = {
             question,
             type: 'judgement',
@@ -56,80 +50,79 @@ class NewQuestion extends Component {
             explaination
           }
 
-    const newDecks = {
-      ...decks,
-      [deckId]: {
-        ...decks[deckId],
-        questions: [
-          ...decks[deckId].questions,
-          newQuestion
-        ]
-      }
-    }
-
-    this.setState(
-      {submitting: true}, // Need to check work or not
-      () => {
-        addQuestionToDeck(newDecks)
-          .then(() => {
-            dispatch(addQuestion(deckId, newQuestion))
-            this.setState({submitting: false})
+    this.setState({
+      submitting: true
+    }, () => {
+      dispatch(handleAddQuestion(deckId, newQuestion, goBack))
+        .then(() => {
+          this.setState({
+            submitting: false
           })
-      }
-    )
-    
-    this.props.navigation.dispatch(NavigationActions.navigate({ routeName: "Home" }))
-    // this.props.navigation.dispatch(NavigationActions.back())
-
-    // console.log(newDecks)
+        })
+    })
   }
 
   render() {
+    const { answer, question, explaination, submitting } = this.state
+
     return (
       <KeyboardAvoidingView 
         behavior="padding"
-        style={{
-          flex: 1,
-          justifyContent: "flex-end",
-        }}
+        style={[styles.flex, styles.container]}
+        keyboardVerticalOffset={100}
       >
-        <Text>Question</Text>
-        <View 
-          style={{
-            borderBottomColor: '#000000',
-            borderBottomWidth: 1,
-          }}
-        >
+        <ScrollView>
+          <Text style={styles.mainText}>Question</Text>
           <TextInput
             multiline={true}
-            maxLength = {60}
             onChangeText={(question) => this.setState({question})}
-            value={this.state.question}
-            style={{width: 100, height: 20}}
+            value={question}
+            style={styles.input}
           />
-        </View>
-        <Text>Answer</Text>
-        <Switch
-          style={{marginTop:30}}
-          onValueChange = {this.toggleSwitch}
-          value = {this.state.answer}
-        />
-        <Text>Explaination</Text>
-        <View 
-          style={{
-            borderBottomColor: '#000000',
-            borderBottomWidth: 1,
-          }}
-        >
+          
+          <View style={styles.answer}>
+            <View style={styles.flex}>
+              <Text style={styles.mainText}>Answer</Text>
+            </View>
+            <Text 
+              style={[
+                {color: green, fontStyle: 'italic'},
+                !answer ? {color: gray} : null
+              ]}
+            >
+              True
+            </Text>
+            <Switch
+              onValueChange = {this.toggleSwitch}
+              value = {answer}
+              style={styles.switch}
+              ios_backgroundColor={red}
+            />
+            <Text
+              style={[
+                {color: red, fontStyle: 'italic'},
+                answer ? {color: gray} : null
+              ]}
+            >
+              False
+            </Text>
+          </View>
+
+          <Text style={styles.mainText}>Explaination</Text>
           <TextInput
             multiline={true}
-            maxLength = {60}
             onChangeText={(explaination) => this.setState({explaination})}
-            value={this.state.explaination}
-            style={{width: 100, height: 20}}
+            value={explaination}
+            style={styles.input}
           />
-        </View>
-        <SubmitBtn submitting={this.state.submitting} onPress={this.submit} />
+
+          <UniversalBtn 
+            disabled={!question || !explaination || submitting}
+            onPress={this.submit}
+            layouts={{marginTop: 50}}
+            content="submit"
+          />
+        </ScrollView>
       </KeyboardAvoidingView>
     )
   }
@@ -145,48 +138,46 @@ const mapStateToProps = (decks, { navigation }) => {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    padding: 20,
-    backgroundColor: white
-  },
-  row: {
-    flexDirection: 'row',
-    flex: 1,
-    alignItems: 'center'
-  },
-  iosSubmitBtn: {
-    backgroundColor: purple,
-    padding: 10,
-    borderRadius: 7,
-    height: 45,
-    marginLeft: 40,
-    marginRight: 40
-  },
-  andriodSubmitBtn: {
-    backgroundColor: purple,
-    padding: 10,
-    paddingLeft: 30,
-    paddingRight: 30,
-    borderRadius: 2,
-    height: 45,
-    alignSelf: 'flex-end',
-    justifyContent: 'center',
-    alignItems: 'center'
-  },
-  submitBtnText: {
-    color: white,
-    fontSize: 22,
-    textAlign: 'center'
-  },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 30,
-    marginRight: 30
+const mapDispatchToProps = (dispatch, { navigation }) => {
+  return {
+    goBack: () => navigation.dispatch(NavigationActions.navigate({
+      routeName: 'Home' 
+    })),
+    dispatch,
   }
+}
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1
+  }, 
+  container: {
+    padding: 20,
+    backgroundColor: white,
+    justifyContent: 'center',
+    alignContent: 'center',
+  },
+  mainText: {
+    fontSize: 20,
+    paddingTop: 10,
+    paddingBottom: 10
+  },
+  input: {
+    borderBottomWidth: 1,
+    borderColor: lightGray,
+    fontSize: 15,
+    marginBottom: 20
+  },
+  answer: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20
+  },
+  switch: {
+    marginLeft: 10,
+    marginRight: 12
+  },
 })
 
-export default connect(mapStateToProps)(NewQuestion)
+export default connect(mapStateToProps, mapDispatchToProps)(NewQuestion)

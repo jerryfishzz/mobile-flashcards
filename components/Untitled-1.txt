@@ -1,0 +1,204 @@
+import React, { Component } from 'react'
+import { 
+  View, 
+  Text,
+  Animated,
+  StyleSheet,
+  TouchableOpacity,
+  Platform,
+  ScrollView,
+  PanResponder,
+} from 'react-native'
+import { white, purple, green, red, gray } from '../utils/colors'
+import UniversalBtn from './UniversalBtn';
+import { TouchableWithoutFeedback } from 'react-native-gesture-handler';
+
+
+function FrontSide({ viewHeight, item, correctness, onPress }) {
+  return (
+    <View>
+      <View style={{minHeight: viewHeight / 2 - 50}}>  
+        <Text style={styles.cardTextMain}>
+          {item.question}
+        </Text>
+      </View>
+
+      <View style={{marginTop: 50}}>
+        <UniversalBtn 
+          disabled={correctness !== null}
+          onPress={onPress}
+          layouts={[styles.forTrue, {zIndex: 2}]}
+          content="correct"
+          btnValue={true}
+        />
+        <UniversalBtn 
+          disabled={correctness !== null}
+          onPress={onPress}
+          layouts={styles.forFalse}
+          content="incorrect"
+          btnValue={false}
+        />
+      </View>
+    </View>
+  )
+}
+
+
+class FlipCard extends Component {
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      viewWidth: 0,
+      viewHeight: 0
+    }
+  }
+  
+  
+  
+  _onLayout = e => {
+    const { width, height } = e.nativeEvent.layout
+
+    this.setState({
+      viewWidth: width,
+      viewHeight: height
+    })
+  }
+
+
+  render() {
+    const { viewWidth, viewHeight } = this.state
+    const { 
+      item, 
+      frontAnimatedStyle, 
+      backAnimatedStyle, 
+      zFront,
+      onPress,
+      correctness, flipCard } = this.props  
+
+
+    return (
+      <View 
+        style={[styles.flex, styles.container]}
+        onLayout={this._onLayout}
+      >
+        <Animated.View 
+          style={[
+            styles.flex, 
+            styles.card, 
+            frontAnimatedStyle, 
+            zFront
+          ]}
+          
+        >
+          {viewHeight
+            ? <ScrollView>
+              <TouchableWithoutFeedback onPress={flipCard}>
+                <View>
+                <View style={{minHeight: viewHeight / 2 - 50}}>  
+                  <Text style={styles.cardTextMain}>
+                    {item.question}
+                  </Text>
+                </View>
+
+                <View style={{marginTop: 50}}>
+                  <UniversalBtn 
+                    disabled={correctness !== null}
+                    onPress={onPress}
+                    layouts={[styles.forTrue, {zIndex: 2}]}
+                    content="correct"
+                    btnValue={true}
+                  />
+                  <UniversalBtn 
+                    disabled={correctness !== null}
+                    onPress={onPress}
+                    layouts={styles.forFalse}
+                    content="incorrect"
+                    btnValue={false}
+                  />
+                </View>
+                </View>
+              </TouchableWithoutFeedback>
+              </ScrollView>
+            : null
+          }
+        </Animated.View>
+
+
+
+        <Animated.View 
+          style={[
+            styles.flex, 
+            styles.card, 
+            styles.cardBack, 
+            backAnimatedStyle,
+            {width: viewWidth, height: viewHeight}
+          ]}
+        >
+          {viewHeight
+            ? <ScrollView> 
+                <Text style={styles.cardTextMain}>
+                  {item.explaination}
+                </Text>
+              </ScrollView>
+            : null
+          }
+        </Animated.View>
+      </View>
+    )
+  }
+}
+
+const styles = StyleSheet.create({
+  flex: {
+    flex: 1
+  }, 
+  container: {
+    backgroundColor: white,
+    alignContent: 'center',
+  },
+  card: {
+    padding: 20,
+    borderWidth: 1,
+    borderColor: 'lightgrey',
+    backgroundColor: '#FFF',
+    overflow: 'hidden',
+    backfaceVisibility: 'hidden',
+  },
+
+
+
+
+
+  forTrue: {
+    backgroundColor: green,
+    marginBottom: 20
+  },
+  forFalse: {
+    backgroundColor: red,
+    marginBottom: 20
+  },
+
+  cardBack: {
+    backgroundColor: '#FFF',
+    position: 'absolute',
+    top: 0
+  },
+  cardText: {
+    margin: 20
+  },
+  cardTextMain: {
+    textAlign: 'left',
+    fontSize: 20,
+    backgroundColor: 'transparent'
+  },
+  cardTextSecondary: {
+    textAlign: 'left',
+    fontSize: 15,
+    color: 'grey',
+    backgroundColor: 'transparent'
+  },
+  
+})
+
+export default FlipCard

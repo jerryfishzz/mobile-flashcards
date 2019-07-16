@@ -7,7 +7,7 @@ import {
   Image,
   Text
 } from 'react-native';
-import Styles from './Styles.js';
+import Styles from '../components/Styles.js';
 
 export default class Card extends Component {
 

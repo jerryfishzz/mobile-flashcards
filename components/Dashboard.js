@@ -1,21 +1,31 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
-import { getDecks } from '../utils/api'
+import { 
+  View, 
+  Text, 
+  StyleSheet, 
+  AsyncStorage,
+  FlatList
+} from 'react-native'
 import { connect } from 'react-redux'
+
+import { getDecks } from '../utils/api'
 import { receiveDecks } from '../actions';
 import DeckCard from './DeckCard';
-
 
 class Dashboard extends Component {
   componentDidMount() {
     const { dispatch } = this.props
 
-    getDecks()
+    // AsyncStorage.clear() This will lead to error in IOS
+  
+    AsyncStorage.getAllKeys()
+      .then(AsyncStorage.multiRemove)
+      .then(getDecks)
       .then(decks => dispatch(receiveDecks(decks)))
   }
 
   render() {
-    const { decks, ...others } = this.props
+    const { decks, deckKeys, ...others } = this.props
 
     if (!decks) {
       return (
@@ -27,9 +37,16 @@ class Dashboard extends Component {
 
     return (
       <View style={styles.container}>
-        {Object.keys(decks).map(deck => (
-          <DeckCard key={deck} id={deck} {...others} />
-        ))}
+        <FlatList 
+          data={deckKeys}
+          renderItem={({ item }) => (
+            <DeckCard
+              id={item}
+              {...others}
+            />
+          )}
+          keyExtractor={item => item}
+        />
       </View>
     )
   }
@@ -42,9 +59,11 @@ const styles = StyleSheet.create({
 })
 
 const mapStateToProps = (decks) => {
-  // console.log(33333)
+  const deckKeys = decks ? Object.keys(decks) : null
+
   return {
-    decks
+    decks,
+    deckKeys
   }
 }
 

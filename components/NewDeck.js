@@ -3,35 +3,19 @@ import {
   View, 
   Text, 
   TextInput, 
-  Switch,
   KeyboardAvoidingView,
-  TouchableOpacity,
-  Platform,
-  StyleSheet
+  StyleSheet,
+  Keyboard,
+  TouchableWithoutFeedback,
 } from 'react-native'
-import { white, purple, green, red, gray } from '../utils/colors'
-import { connect } from 'react-redux'
-import { addQuestion, addDeck } from '../actions';
-import { addQuestionToDeck, addDeckToApp } from '../utils/api';
 import { NavigationActions } from 'react-navigation';
 import * as R from 'ramda'
+import { connect } from 'react-redux'
 
-function SubmitBtn({ submitting, onPress }) {
-  return (
-    <TouchableOpacity
-      style={[
-        Platform.OS === 'ios' 
-          ? styles.iosSubmitBtn 
-          : styles.andriodSubmitBtn,
-        {marginBottom: 100}
-      ]}
-      onPress={onPress}
-      disabled={submitting}
-    >
-      <Text style={styles.submitBtnText}>SUBMIT</Text>
-    </TouchableOpacity>
-  )
-}
+import { white, lightGray } from '../utils/colors'
+import { handleAddDeck } from '../actions';
+import { getDecks } from '../utils/api';
+import UniversalBtn from './UniversalBtn';
 
 class NewDeck extends Component {
   state = {
@@ -41,116 +25,119 @@ class NewDeck extends Component {
 
   submit = () => {
     const { deck } = this.state
-    const { dispatch } = this.props
+    const { dispatch, navigation } = this.props
 
     const noSpace = n => n !== ' '
     const noSapceArray = R.filter(noSpace)(deck)
     const key = R.join('')(noSapceArray)
     
-
     const entry = {
       title: deck,
       questions: []
     }
 
+    // For dismissing keyboard working properly after alert, 
+    // need to hack a little
+    const alertAndDismiss = alertText => {
+      Keyboard.dismiss()
+      setTimeout(() => alert(alertText), 50)
+    } 
+
     this.setState(
-      {submitting: true}, // Need to check work or not
+      {submitting: true}, 
       () => {
-        addDeckToApp({ entry, key })
-          .then(() => {
-            dispatch(addDeck(key, entry))
-            this.setState({submitting: false})
+        getDecks()
+          .then(decks => Object.keys(decks).map(key => R.toLower(key)))
+          .then(keys => {
+            if (keys.indexOf(R.toLower(key)) !== -1) {
+              const alertText = 'Deck with the same name already exists'
+              alertAndDismiss(alertText)
+
+              this.setState({
+                submitting: false,
+                deck: ''
+              })
+            } else {
+              dispatch(handleAddDeck({[key]: entry}))
+                .then(() => {
+                  this.setState({
+                    submitting: false,
+                    deck: ''
+                  }, () => {
+                    navigation.dispatch(NavigationActions.navigate({ 
+                      routeName: 'Decks'
+                    }))
+                  })
+                })
+                .catch(err => {
+                  alertAndDismiss('Error occurs')
+                  console.log(err)
+                  this.setState({
+                    submitting: false,
+                  })
+                })
+            }
           })
       }
     )
-    
-    this.props.navigation.dispatch(NavigationActions.navigate({ routeName: "Decks" }))
-    // this.props.navigation.dispatch(NavigationActions.back())
-
-    // console.log(newDecks)
   }
 
   render() {
+    const { deck, submitting } = this.state
+
     return (
-      <KeyboardAvoidingView 
-        behavior="padding"
-        style={{
-          flex: 1,
-          justifyContent: "flex-end",
-        }}
+      <TouchableWithoutFeedback 
+        onPress={Keyboard.dismiss} 
+        accessible={false}
       >
-        <Text>New Deck</Text>
-        <View 
-          style={{
-            borderBottomColor: '#000000',
-            borderBottomWidth: 1,
-          }}
+        <KeyboardAvoidingView 
+          behavior="padding"
+          style={[styles.flex, styles.container]}
         >
-          <TextInput
-            multiline={true}
-            maxLength = {60}
-            onChangeText={(deck) => this.setState({deck})}
-            value={this.state.deck}
-            style={{width: 100, height: 20}}
+          <Text style={styles.mainText}>
+            Name of the new deck
+          </Text>
+          <View style={styles.flex}>
+            <TextInput
+              onChangeText={(deck) => this.setState({deck})}
+              value={deck}
+              style={styles.input}
+              selectTextOnFocus
+              maxLength={20}
+            />
+          </View>
+          <UniversalBtn 
+            disabled={deck === '' || submitting}
+            onPress={this.submit}
+            layouts={[{marginBottom: 100}]}
+            content="submit"
           />
-        </View>
-        <SubmitBtn submitting={this.state.submitting} onPress={this.submit} />
-      </KeyboardAvoidingView>
+        </KeyboardAvoidingView>
+      </TouchableWithoutFeedback>
     )
   }
 }
 
-// const mapStateToProps = (decks, { navigation }) => {
-//   const { deckId } =  navigation.state.params
-
-//   return {
-//     decks,
-//     questions: decks[deckId].questions,
-//     deckId
-//   }
-// }
-
 const styles = StyleSheet.create({
+  flex: {
+    flex: 1
+  }, 
   container: {
-    flex: 1,
     padding: 20,
-    backgroundColor: white
-  },
-  row: {
-    flexDirection: 'row',
-    flex: 1,
-    alignItems: 'center'
-  },
-  iosSubmitBtn: {
-    backgroundColor: purple,
-    padding: 10,
-    borderRadius: 7,
-    height: 45,
-    marginLeft: 40,
-    marginRight: 40
-  },
-  andriodSubmitBtn: {
-    backgroundColor: purple,
-    padding: 10,
-    paddingLeft: 30,
-    paddingRight: 30,
-    borderRadius: 2,
-    height: 45,
-    alignSelf: 'flex-end',
+    backgroundColor: white,
     justifyContent: 'center',
-    alignItems: 'center'
+    alignContent: 'center',
   },
-  submitBtnText: {
-    color: white,
-    fontSize: 22,
-    textAlign: 'center'
+  mainText: {
+    fontSize: 20,
+    paddingTop: 10,
+    paddingBottom: 10
   },
-  center: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    marginLeft: 30,
-    marginRight: 30
+  input: {
+    height: 30,
+    borderBottomWidth: 1,
+    borderColor: lightGray,
+    fontSize: 15,
   }
 })
 

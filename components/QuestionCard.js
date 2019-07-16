@@ -1,14 +1,6 @@
 import React, { Component } from 'react'
-import { 
-  View, 
-  Text, 
-  Image,
-  PanResponder,
-  Animated,
-  TouchableOpacity,
-} from 'react-native'
-// import { getDeck } from '../utils/api';
-import Styles from './Styles.js';
+import { View, Animated } from 'react-native'
+
 import FlipCard from './FlipCard';
 
 class QuestionCard extends Component {
@@ -16,7 +8,8 @@ class QuestionCard extends Component {
     super(props)
     
     this.state = {
-      correctness : null,
+      userChoice : null,
+      zFront: true
     }
 
     this.value = 0
@@ -40,73 +33,59 @@ class QuestionCard extends Component {
   }
 
   flipCard = () => {
-    if (this.value >= 90) {
-      Animated.spring(this.animatedValue, {
-        toValue: 0,
-        friction: 8,
-        tension: 10
-      }).start()
-    } else {
-      Animated.spring(this.animatedValue, {
-        toValue: 180,
-        friction: 8,
-        tension: 10
-      }).start()
-    }
+    
+
+    this.setState(prevState => ({
+      zFront: !prevState.zFront
+    }), () => {
+      if (this.value >= 90) {
+        Animated.spring(this.animatedValue, {
+          toValue: 0,
+          friction: 8,
+          tension: 10
+        }).start()
+      } else {
+        Animated.spring(this.animatedValue, {
+          toValue: 180,
+          friction: 8,
+          tension: 10
+        }).start()
+      }
+    })
   }
 
-  handlePress = correctness => {
-    // console.log('press')
-    this.setState({correctness})
-  }
-
+  handlePress = userChoice => this.setState({userChoice})
+  
   render() {
-    const { correctness } = this.state
+    const { userChoice, zFront } = this.state
     const { item } = this.props
 
     const frontAnimatedStyle = {
+      zIndex: zFront ? 1 : null,
       transform: [
         {rotateX: this.frontInterpolate}
       ]
     }
     const backAnimatedStyle = {
+      zIndex: !zFront ? 1 : null,
       transform: [
         {rotateX: this.backInterpolate}
       ]
     }
-    const zFront = correctness === null ? {zIndex: 1} : null 
-   
-    if (correctness !== null) {
-      return (
-        <TouchableOpacity 
-          onPress={this.flipCard}
-        >
-          <FlipCard 
-            item={item}
-            frontAnimatedStyle={frontAnimatedStyle}
-            backAnimatedStyle={backAnimatedStyle}
-            correctness={correctness}
-            onPress={this.handlePress}
-          />
-        </TouchableOpacity>
-      )
-    }
-
+    
     return (
-      <FlipCard 
-        item={item}
-        frontAnimatedStyle={frontAnimatedStyle}
-        backAnimatedStyle={backAnimatedStyle}
-        correctness={correctness}
-        zFront={zFront}
-        onPress={this.handlePress}
-      />
+      <View style={{flex: 1}}>
+        <FlipCard
+          item={item}
+          frontAnimatedStyle={frontAnimatedStyle}
+          backAnimatedStyle={backAnimatedStyle}
+          userChoice={userChoice}
+          onPress={this.handlePress}
+          flipCard={this.flipCard}
+        />
+      </View>
     )
   }
 }
-
-// const mapStateToProps = (decks) => {
-
-// }
 
 export default QuestionCard
