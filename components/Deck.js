@@ -68,8 +68,11 @@ class Deck extends Component {
           <UniversalBtn 
             disabled={deck.questions.length === 0}
             onPress={() => navigation.navigate(
-              'QuestionStack',
-              {deckId}
+              'QuestionStack', {
+                deckId, 
+                counts: deck.questions.length,
+                current: '1'
+              }
             )}
             layouts={styles.quiz}
             content="Start Quiz"

@@ -13,7 +13,8 @@ const UniversalBtn = ({
   onPress, 
   layouts, 
   content,
-  btnValue
+  btnValue,
+  index
 }) => {
   const btnText = R.toUpper(content)
 
@@ -28,7 +29,7 @@ const UniversalBtn = ({
           ? {backgroundColor: gray}
           : null,
       ]}
-      onPress={() => onPress(btnValue)}
+      onPress={() => onPress(btnValue, index)}
       disabled={disabled}
     >
       <Text style={styles.universalBtnText}>{btnText}</Text>

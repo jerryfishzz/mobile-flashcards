@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { View, Animated } from 'react-native'
+import { View, Animated, Text } from 'react-native'
 
 import FlipCard from './FlipCard';
 
@@ -33,8 +33,6 @@ class QuestionCard extends Component {
   }
 
   flipCard = () => {
-    
-
     this.setState(prevState => ({
       zFront: !prevState.zFront
     }), () => {
@@ -54,11 +52,24 @@ class QuestionCard extends Component {
     })
   }
 
-  handlePress = userChoice => this.setState({userChoice})
+  handlePress = (userChoice, index) => {
+    this.setState({userChoice})
+
+    const { item, onAnswer } = this.props
+    onAnswer(item.answer, userChoice, index)
+  }
   
   render() {
     const { userChoice, zFront } = this.state
-    const { item } = this.props
+    const { item, index } = this.props
+
+    // if (!item) {
+    //   return (
+    //     <View>
+    //       <Text>Loading</Text>
+    //     </View>
+    //   )
+    // }
 
     const frontAnimatedStyle = {
       zIndex: zFront ? 1 : null,
@@ -77,6 +88,7 @@ class QuestionCard extends Component {
       <View style={{flex: 1}}>
         <FlipCard
           item={item}
+          index={index}
           frontAnimatedStyle={frontAnimatedStyle}
           backAnimatedStyle={backAnimatedStyle}
           userChoice={userChoice}

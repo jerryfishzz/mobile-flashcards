@@ -110,7 +110,7 @@ class NewDeck extends Component {
             disabled={deck === '' || submitting}
             onPress={this.submit}
             layouts={[{marginBottom: 100}]}
-            content="submit"
+            content="create deck"
           />
         </KeyboardAvoidingView>
       </TouchableWithoutFeedback>

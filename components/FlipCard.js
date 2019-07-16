@@ -22,7 +22,7 @@ function YourChoice() {
   )
 }
 
-function FrontSide({ viewHeight, item, userChoice, onPress }) {
+function FrontSide({ viewHeight, item, index, userChoice, onPress }) {
   return (
     <View style={styles.flex}>
       <View style={{minHeight: viewHeight / 2 - 50}}>  
@@ -54,6 +54,7 @@ function FrontSide({ viewHeight, item, userChoice, onPress }) {
         <UniversalBtn 
           disabled={userChoice !== null}
           onPress={onPress}
+          index={index}
           layouts={[styles.forTrue, {zIndex: 2}]}
           content="correct"
           btnValue={true}
@@ -62,6 +63,7 @@ function FrontSide({ viewHeight, item, userChoice, onPress }) {
         <UniversalBtn 
           disabled={userChoice !== null}
           onPress={onPress}
+          index={index}
           layouts={styles.forFalse}
           content="incorrect"
           btnValue={false}
@@ -100,10 +102,12 @@ class FlipCard extends Component {
     const { viewWidth, viewHeight } = this.state
     const { 
       item, 
+      index,
       frontAnimatedStyle, 
       backAnimatedStyle,
       onPress,
-      userChoice, flipCard } = this.props  
+      userChoice, 
+      flipCard } = this.props  
 
     return (
       <View 
@@ -132,6 +136,7 @@ class FlipCard extends Component {
                       <FrontSide 
                         viewHeight={viewHeight} 
                         item={item} 
+                        index={index}
                         userChoice={userChoice}
                         onPress={onPress}
                       />
@@ -139,6 +144,7 @@ class FlipCard extends Component {
                   : <FrontSide 
                       viewHeight={viewHeight} 
                       item={item} 
+                      index={index}
                       userChoice={userChoice}
                       onPress={onPress}
                     />
