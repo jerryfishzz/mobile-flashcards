@@ -135,7 +135,7 @@ class QuestionStack extends Component {
 }  
 
   
-const mapStateToProps = (decks, { navigation }) => {
+const mapStateToProps = ({ decks }, { navigation }) => {
   const { deckId } =  navigation.state.params
 
   return {

@@ -58,7 +58,7 @@ const styles = StyleSheet.create({
   },
 })
 
-const mapStateToProps = (decks) => {
+const mapStateToProps = ({ decks }) => {
   const deckKeys = decks ? Object.keys(decks) : null
 
   return {

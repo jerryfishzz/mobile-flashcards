@@ -11,6 +11,8 @@ import { white, gray, black, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn';
 import { removeDeckAndGoBack } from '../actions';
 import { Ionicons } from '@expo/vector-icons'
+import { getDeck } from '../utils/api';
+import { initializeDeck } from '../actions/currentDeck';
 
 class Deck extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -35,7 +37,25 @@ class Deck extends Component {
     }
   }
 
-  handleRemove = () => this.props.remove()
+  state = {
+    correctChoices: 0,
+    answeredQuestions: 0,
+    deck: {}
+  }
+
+  componentDidMount() {
+    const { navigation, dispatch } = this.props
+    const { deckId } =  navigation.state.params
+
+    dispatch(initializeDeck(deckId))
+      .then(({ currentDeck: { correctChoices, answeredQuestions, deck }}) => {
+        this.setState({
+          correctChoices,
+          answeredQuestions,
+          deck
+        })
+      })
+  }
 
   confirmDelete = () => {
     Alert.alert(
@@ -43,7 +63,7 @@ class Deck extends Component {
       'Are you sure to delete it?',
       [
         {text: 'NO', style: 'cancel'},
-        {text: 'YES', onPress: this.handleRemove},
+        {text: 'YES', onPress: () => this.props.remove()},
       ]
     )
   }
@@ -53,7 +73,16 @@ class Deck extends Component {
   }
 
   render() {
-    const { deckId, deck, navigation } = this.props
+    const { deckId, navigation } = this.props
+    const { deck } = this.state
+
+    if (deck.title === undefined) {
+      return (
+        <View>
+          <Text>Loading</Text>
+        </View>
+      )
+    }
 
     return (
       <View style={[styles.flex, styles.container]}>
@@ -88,7 +117,7 @@ class Deck extends Component {
   }
 }
 
-const mapStateToProps = (decks, { navigation }) => {
+const mapStateToProps = ({ decks }, { navigation }) => {
   const { deckId } = navigation.state.params
   const deck = decks[deckId]
 
@@ -105,6 +134,7 @@ const mapDispatchToProps = (dispatch, { navigation }) => {
 
   return {
     remove: () => dispatch(removeDeckAndGoBack(deckId, goBack)),
+    dispatch
   }
 }
 

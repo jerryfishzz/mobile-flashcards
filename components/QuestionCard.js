@@ -63,14 +63,6 @@ class QuestionCard extends Component {
     const { userChoice, zFront } = this.state
     const { item, index } = this.props
 
-    // if (!item) {
-    //   return (
-    //     <View>
-    //       <Text>Loading</Text>
-    //     </View>
-    //   )
-    // }
-
     const frontAnimatedStyle = {
       zIndex: zFront ? 1 : null,
       transform: [
