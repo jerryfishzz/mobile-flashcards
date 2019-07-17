@@ -12,6 +12,7 @@ import { connect } from 'react-redux'
 import Carousel from 'react-native-snap-carousel';
 
 import QuestionCard from './QuestionCard';
+import { resetDeck } from '../actions/currentDeck';
 
 const { width: viewportWidth } = Dimensions.get('window');
 
@@ -96,15 +97,17 @@ class QuestionStack extends Component {
   }
 
   restartTest = () => {
-    const { deckId, questions, navigation } = this.props
+    // const { deckId, questions, navigation } = this.props
+    const { dispatch } = this.props
 
     this._carousel.snapToItem(0)
+    dispatch(resetDeck())
   }
   
 
   render() {
-    const { questions  } = this.props
-    const { stackQuestions } = this.state
+    const { questions, stackQuestions } = this.props
+    // const { stackQuestions } = this.state
 
     if (!stackQuestions.length) {
       return (
@@ -124,6 +127,7 @@ class QuestionStack extends Component {
             item={item}
             index={index}
             onAnswer={this.handleAnswer}
+            restartTest={this.restartTest}
           />
         )}
         sliderWidth={viewportWidth}
@@ -135,13 +139,15 @@ class QuestionStack extends Component {
 }  
 
   
-const mapStateToProps = ({ decks }, { navigation }) => {
+const mapStateToProps = ({ decks, currentDeck }, { navigation }) => {
   const { deckId } =  navigation.state.params
+  const { deck: { questions } } = currentDeck
 
   return {
-    decks,
+    // decks,
     questions: decks[deckId].questions,
-    deckId
+    // deckId,
+    stackQuestions: questions
   }
 }
 

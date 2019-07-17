@@ -123,7 +123,7 @@ const mapStateToProps = ({ decks }, { navigation }) => {
 
   return {
     deckId,
-    deck,
+    deck, // This only for deleting deck
     navigation
   }
 }

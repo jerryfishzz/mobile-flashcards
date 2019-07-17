@@ -6,9 +6,13 @@ import {
   StyleSheet,
   TouchableOpacity,
   ScrollView,
+  Alert
 } from 'react-native'
+import { connect } from 'react-redux'
+
 import { white, purple, green, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
+import { chooseAnswer, handleChooseAnswer } from '../actions/currentDeck';
 
 function YourChoice() {
   return (
@@ -98,16 +102,48 @@ class FlipCard extends Component {
     })
   }
 
+  handlePress = (userChoice, index) => {
+    const { dispatch } = this.props
+
+    // dispatch(chooseAnswer(userChoice, index))
+    dispatch(handleChooseAnswer(userChoice, index, this.handleComplete))
+  }
+
+  handleComplete = (answeredQuestions, correctChoices) => {
+    const { restartTest } = this.props
+    // const { questions } = this.props
+    // const { currentDeck: { answeredQuestions, correctChoices } } = getState()
+    // if (answeredQuestions === questions.length) {
+      Alert.alert(
+        '',
+        `Correct answers: ${correctChoices} out of ${answeredQuestions}`,
+        [
+          {text: 'OK', style: 'cancel'},
+          {text: 'Restart', onPress: restartTest},
+        ]
+      )
+    // }
+  }
+
   render() {
     const { viewWidth, viewHeight } = this.state
+    // const { 
+    //   item, 
+    //   index,
+    //   frontAnimatedStyle, 
+    //   backAnimatedStyle,
+    //   onPress,
+    //   userChoice, 
+    //   flipCard } = this.props  
+
     const { 
-      item, 
-      index,
       frontAnimatedStyle, 
       backAnimatedStyle,
-      onPress,
       userChoice, 
-      flipCard } = this.props  
+      flipCard,
+      onPress,
+      ...others
+    } = this.props  
 
     return (
       <View 
@@ -135,18 +171,16 @@ class FlipCard extends Component {
                     >
                       <FrontSide 
                         viewHeight={viewHeight} 
-                        item={item} 
-                        index={index}
                         userChoice={userChoice}
-                        onPress={onPress}
+                        onPress={this.handlePress}
+                        {...others}
                       />
                     </TouchableOpacity>
                   : <FrontSide 
                       viewHeight={viewHeight} 
-                      item={item} 
-                      index={index}
                       userChoice={userChoice}
-                      onPress={onPress}
+                      onPress={this.handlePress}
+                      {...others}
                     />
                 }
               </ScrollView>
@@ -174,7 +208,7 @@ class FlipCard extends Component {
                   style={styles.flex} 
                   onPress={flipCard}
                 >
-                  <BackSide item={item} />
+                  <BackSide {...others} />
                 </TouchableOpacity>
               </ScrollView>
             : null
@@ -182,6 +216,27 @@ class FlipCard extends Component {
         </Animated.View>
       </View>
     )
+  }
+}
+
+const mapStateToProps = (
+  { currentDeck }, 
+  { index, frontAnimatedStyle, backAnimatedStyle, flipCard, restartTest }
+) => {
+  const { correctChoices, answeredQuestions } = currentDeck
+  const item = currentDeck.deck.questions[index]
+  const { userChoice } = item.status
+  
+  return {
+    index,
+    item,
+    userChoice,
+    frontAnimatedStyle, 
+    backAnimatedStyle, 
+    flipCard,
+    correctChoices, 
+    answeredQuestions,
+    restartTest
   }
 }
 
@@ -231,4 +286,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default FlipCard
+export default connect(mapStateToProps)(FlipCard)

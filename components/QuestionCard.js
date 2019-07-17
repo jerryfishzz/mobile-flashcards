@@ -1,5 +1,7 @@
 import React, { Component } from 'react'
 import { View, Animated, Text } from 'react-native'
+import { connect } from 'react-redux'
+
 
 import FlipCard from './FlipCard';
 
@@ -60,8 +62,9 @@ class QuestionCard extends Component {
   }
   
   render() {
-    const { userChoice, zFront } = this.state
-    const { item, index } = this.props
+    // const { userChoice, zFront } = this.state
+    // const { item, index, zFront, userChoice } = this.props
+    const { zFront, ...others } = this.props
 
     const frontAnimatedStyle = {
       zIndex: zFront ? 1 : null,
@@ -79,17 +82,34 @@ class QuestionCard extends Component {
     return (
       <View style={{flex: 1}}>
         <FlipCard
-          item={item}
-          index={index}
           frontAnimatedStyle={frontAnimatedStyle}
           backAnimatedStyle={backAnimatedStyle}
-          userChoice={userChoice}
           onPress={this.handlePress}
           flipCard={this.flipCard}
+          {...others}
         />
       </View>
     )
   }
 }
 
-export default QuestionCard
+const mapStateToProps = (
+  { decks, currentDeck }, 
+  { item, index, restartTest }
+) => {
+  // const { deckId } =  navigation.state.params
+  const { userChoice, zFront } = item.status
+// console.log(item)
+  return {
+    // decks,
+    // questions: decks[deckId].questions,
+    // deckId,
+    // stackQuestions: questions,
+    zFront,
+    userChoice,
+    index,
+    restartTest
+  }
+}
+
+export default connect(mapStateToProps)(QuestionCard)
