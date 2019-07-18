@@ -80,6 +80,7 @@ const Stack = createStackNavigator({
     screen: TabsContainer,
     navigationOptions: {
       header: null,
+      headerBackTitle: 'Home'
     },
   },
   Deck: {

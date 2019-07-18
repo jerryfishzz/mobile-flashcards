@@ -1,4 +1,4 @@
-import { RECEIVE_DECK, CHOOSE_ANSWER, RESET_DECK } from "../actions/currentDeck";
+import { RECEIVE_DECK, CHOOSE_ANSWER, RESET_DECK, TOGGLE_ZFRONT } from "../actions/currentDeck";
 
 export default function currentDeck(state = {}, action) {
   switch (action.type) {
@@ -43,6 +43,25 @@ export default function currentDeck(state = {}, action) {
             }
           }))
         }
+      }
+    case TOGGLE_ZFRONT:
+      return {
+        ...state,
+        deck: {
+          ...state.deck,
+          questions: state.deck.questions.map((q, i) => {
+            if (i === action.index) {
+              return {
+                ...q,
+                status: {
+                  ...q.status,
+                  zFront: !state.deck.questions[action.index].status.zFront
+                }
+              }
+            }
+            return q
+          })
+        },
       }
     default:
       return state

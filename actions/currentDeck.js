@@ -3,6 +3,7 @@ import { getDeck } from "../utils/api";
 export const RECEIVE_DECK = 'RECEIVE_DECK'
 export const CHOOSE_ANSWER = 'CHOOSE_ANSWER'
 export const RESET_DECK = 'RESET_DECK'
+export const TOGGLE_ZFRONT = 'TOGGLE_ZFRONT'
 
 function receiveDeck(currentDeck) {
   return {
@@ -59,5 +60,19 @@ export function handleChooseAnswer(userChoice, index, cb) {
 export function resetDeck() {
   return {
     type: RESET_DECK
+  }
+}
+
+export function toggleZFront(index) {
+  return {
+    type: TOGGLE_ZFRONT,
+    index
+  }
+}
+
+export function handleToggleZFront(index, cb) {
+  return dispatch => {
+    dispatch(toggleZFront(index))
+    cb()
   }
 }

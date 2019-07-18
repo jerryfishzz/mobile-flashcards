@@ -1,6 +1,6 @@
 
 
-When the score is displayed, buttons are displayed to either start the quiz over or go back to the Individual Deck view.
+
 
 Pressing the button correctly creates the deck and routes the user to the Individual Deck view for the new deck.
 

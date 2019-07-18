@@ -10,18 +10,31 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 import Carousel from 'react-native-snap-carousel';
+import { HeaderBackButton, Header } from 'react-navigation';
 
 import QuestionCard from './QuestionCard';
-import { resetDeck } from '../actions/currentDeck';
+import { resetDeck, initializeDeck } from '../actions/currentDeck';
+import { white, gray, black, red } from '../utils/colors'
 
 const { width: viewportWidth } = Dimensions.get('window');
 
 class QuestionStack extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { counts, current } = navigation.state.params
+    const { counts, current, initialize } = navigation.state.params
 
     return {
-      title: `${current} / ${counts}`
+      title: `${current} / ${counts}`,
+      headerLeft: (
+        <HeaderBackButton 
+          onPress={() => {
+            navigation.goBack()
+            initialize()
+          }} 
+          title='Deck'
+          backTitleVisible={true}
+          tintColor={white}
+        />
+      ),
     }
   }
 
@@ -32,7 +45,7 @@ class QuestionStack extends Component {
   }
 
   componentDidMount() {
-    const { questions } = this.props
+    const { questions, navigation, dispatch, deckId } = this.props
 
     if (questions.length) {
       const stackQuestions = questions.map(q => ({
@@ -44,7 +57,13 @@ class QuestionStack extends Component {
       }))
 
       this.setState({stackQuestions})
+
+      navigation.setParams({
+        initialize: () => dispatch(initializeDeck(deckId))
+      })
     }
+
+
   }
 
   updateTitle = slideIndex => {
@@ -146,7 +165,7 @@ const mapStateToProps = ({ decks, currentDeck }, { navigation }) => {
   return {
     // decks,
     questions: decks[deckId].questions,
-    // deckId,
+    deckId,
     stackQuestions: questions
   }
 }

@@ -12,7 +12,7 @@ import { connect } from 'react-redux'
 
 import { white, purple, green, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
-import { chooseAnswer, handleChooseAnswer } from '../actions/currentDeck';
+import { chooseAnswer, handleChooseAnswer, handleToggleZFront } from '../actions/currentDeck';
 
 function YourChoice() {
   return (
@@ -125,6 +125,11 @@ class FlipCard extends Component {
     // }
   }
 
+  handleFlip = () => {
+    const { index, dispatch, flipCard } = this.props
+    dispatch(handleToggleZFront(index, flipCard))
+  }
+
   render() {
     const { viewWidth, viewHeight } = this.state
     // const { 
@@ -166,7 +171,7 @@ class FlipCard extends Component {
                 {userChoice !== null
                   ? <TouchableOpacity 
                       style={styles.flex} 
-                      onPress={flipCard}
+                      onPress={this.handleFlip}
                       activeOpacity={1}
                     >
                       <FrontSide 
@@ -206,7 +211,7 @@ class FlipCard extends Component {
                 <TouchableOpacity 
                   activeOpacity={1} 
                   style={styles.flex} 
-                  onPress={flipCard}
+                  onPress={this.handleFlip}
                 >
                   <BackSide {...others} />
                 </TouchableOpacity>

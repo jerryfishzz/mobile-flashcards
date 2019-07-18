@@ -34,6 +34,7 @@ class Deck extends Component {
           />
         </TouchableOpacity>
       ),
+      headerBackTitle: 'Deck',
     }
   }
 

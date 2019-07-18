@@ -35,9 +35,9 @@ class QuestionCard extends Component {
   }
 
   flipCard = () => {
-    this.setState(prevState => ({
-      zFront: !prevState.zFront
-    }), () => {
+    // this.setState(prevState => ({
+    //   zFront: !prevState.zFront
+    // }), () => {
       if (this.value >= 90) {
         Animated.spring(this.animatedValue, {
           toValue: 0,
@@ -51,7 +51,7 @@ class QuestionCard extends Component {
           tension: 10
         }).start()
       }
-    })
+    // })
   }
 
   handlePress = (userChoice, index) => {
