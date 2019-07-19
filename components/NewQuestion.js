@@ -18,8 +18,10 @@ import {
   gray, 
   lightGray 
 } from '../utils/colors'
-import { handleAddQuestion } from '../actions';
+// import { handleAddQuestion } from '../actions';
 import UniversalBtn from './UniversalBtn';
+import { uuidv1 } from '../utils/api';
+import { handleAddQuestion } from '../actions/shared';
 
 class NewQuestion extends Component {
   static navigationOptions = () => ({
@@ -44,6 +46,7 @@ class NewQuestion extends Component {
           { question, answer, explaination } = this.state,
 
           newQuestion = {
+            id: uuidv1(),
             question,
             type: 'judgement',
             answer,
@@ -140,9 +143,7 @@ const mapStateToProps = ({ decks }, { navigation }) => {
 
 const mapDispatchToProps = (dispatch, { navigation }) => {
   return {
-    goBack: () => navigation.dispatch(NavigationActions.navigate({
-      routeName: 'Home' 
-    })),
+    goBack: () => navigation.goBack(),
     dispatch,
   }
 }

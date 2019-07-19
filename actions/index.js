@@ -20,58 +20,58 @@ export function addQuestion(deckId, newQuestion) {
   }
 }
 
-export function handleAddQuestion(deckId, newQuestion, cb) {
-  return dispatch => {
-    return getDecks()
-      .then(decks => {
-        const newDecks = {
-          ...decks,
-          [deckId]: { // Assume only one user operating
-            ...decks[deckId],
-            questions: [
-              ...decks[deckId].questions,
-              newQuestion
-            ]
-          }
-        }
-        return newDecks
-      })
-      .then(modifyDecks)
-      .then(() => {
-        dispatch(addQuestion(deckId, newQuestion))
-        cb()
-      })
-  }
-}
+// export function handleAddQuestion(deckId, newQuestion, cb) {
+//   return dispatch => {
+//     return getDecks()
+//       .then(decks => {
+//         const newDecks = {
+//           ...decks,
+//           [deckId]: { // Assume only one user operating
+//             ...decks[deckId],
+//             questions: [
+//               ...decks[deckId].questions,
+//               newQuestion
+//             ]
+//           }
+//         }
+//         return newDecks
+//       })
+//       .then(modifyDecks)
+//       .then(() => {
+//         dispatch(addQuestion(deckId, newQuestion))
+//         cb()
+//       })
+//   }
+// }
 
-function addDeck(newDeck) {
+export function addDeck(entry) {
   return {
     type: ADD_DECK,
-    newDeck
+    entry
   }
 }
 
-export function handleAddDeck(newDeck) {
-  return dispatch => {
-    return addDeckToApp(newDeck)
-      .then(() => {
-        dispatch(addDeck(newDeck))
-      })
-  }
-}
+// export function handleAddDeck({ key, entry }) {
+//   return dispatch => {
+//     return addDeckToApp({ key, entry })
+//       .then(() => {
+//         dispatch(addDeck({[key]: entry}))
+//       })
+//   }
+// }
 
-function removeDeck(deckId) {
+export function removeDeck(deckId) {
   return {
     type: REMOVE_DECK,
     deckId
   }
 }
 
-export function removeDeckAndGoBack(deckId, cb) {
-  return dispatch => {
-    dispatch(removeDeck(deckId))
-    cb()
+// export function removeDeckAndGoBack(deckId, cb) {
+//   return dispatch => {
+//     dispatch(removeDeck(deckId))
+//     cb()
 
-    return removeDeckFromApp(deckId)
-  }
-}
+//     return removeDeckFromApp(deckId)
+//   }
+// }

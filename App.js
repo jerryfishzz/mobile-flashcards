@@ -32,7 +32,6 @@ const Tabs = createBottomTabNavigator({
   Decks: {
     screen: Dashboard,
     navigationOptions: {
-      tabBarLabel: 'Decks',
       tabBarIcon: ({ tintColor }) => 
         <MaterialCommunityIcons 
           name='library-books' 

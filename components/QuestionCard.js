@@ -108,7 +108,7 @@ const mapStateToProps = (
     zFront,
     userChoice,
     index,
-    restartTest
+    restartTest,
   }
 }
 

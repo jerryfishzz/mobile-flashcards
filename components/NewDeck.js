@@ -13,9 +13,10 @@ import * as R from 'ramda'
 import { connect } from 'react-redux'
 
 import { white, lightGray } from '../utils/colors'
-import { handleAddDeck } from '../actions';
+// import { handleAddDeck } from '../actions';
 import { getDecks } from '../utils/api';
 import UniversalBtn from './UniversalBtn';
+import { handleAddDeck } from '../actions/shared';
 
 class NewDeck extends Component {
   state = {
@@ -48,7 +49,7 @@ class NewDeck extends Component {
       () => {
         getDecks()
           .then(decks => Object.keys(decks).map(key => R.toLower(key)))
-          .then(keys => {
+          .then(keys => { // Check duplicate deck name
             if (keys.indexOf(R.toLower(key)) !== -1) {
               const alertText = 'Deck with the same name already exists'
               alertAndDismiss(alertText)
@@ -58,15 +59,19 @@ class NewDeck extends Component {
                 deck: ''
               })
             } else {
-              dispatch(handleAddDeck({[key]: entry}))
+              dispatch(handleAddDeck({ key, entry }))
                 .then(() => {
                   this.setState({
                     submitting: false,
                     deck: ''
                   }, () => {
-                    navigation.dispatch(NavigationActions.navigate({ 
-                      routeName: 'Decks'
-                    }))
+                    // navigation.dispatch(NavigationActions.navigate({ 
+                    //   routeName: 'Decks'
+                    // }))
+                    navigation.navigate(
+                      'Deck', 
+                      { deckId: key }
+                    )
                   })
                 })
                 .catch(err => {
