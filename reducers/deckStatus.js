@@ -1,4 +1,5 @@
-import { RECEIVE_STATUS, INITIALIZE_STATUS, ADD_STATUS, REMOVE_STATUS, ADD_QUESTION_STATUS } from "../actions/deckStatus";
+import { RECEIVE_STATUS, INITIALIZE_STATUS, ADD_STATUS, REMOVE_STATUS, ADD_QUESTION_STATUS, RESET_DECK, CHOOSE_ANSWER, TOGGLE_Z } from "../actions/deckStatus";
+// import { CHOOSE_ANSWER } from "../actions/currentDeck";
 
 export default function deckStatus(state = {}, action) {
   switch (action.type) {
@@ -32,6 +33,54 @@ export default function deckStatus(state = {}, action) {
               zFront: true
             }
           ]
+        }
+      }
+    case CHOOSE_ANSWER:
+      return {
+        ...state,
+        [action.key]: {
+          answeredQuestions: state[action.key].answeredQuestions + 1,
+          correctChoices: action.userChoice === action.correctAnswer
+            ? state[action.key].correctChoices + 1
+            : state[action.key].correctChoices,
+          questions: state[action.key].questions.map(q => {
+            if (q.id === action.id) {
+              return {
+                ...q,
+                userChoice: action.userChoice
+              }
+            }
+            return q
+          })
+        }
+      }
+    case RESET_DECK:
+      return {
+        ...state,
+        [action.deckId]: {
+          answeredQuestions: 0,
+          correctChoices: 0,
+          questions: state[action.deckId].questions.map(q => ({
+            ...q,
+            userChoice : null,
+            zFront: true
+          }))
+        }
+      }
+    case TOGGLE_Z:
+      return {
+        ...state,
+        [action.deckId]: {
+          ...state[action.deckId],
+          questions: state[action.deckId].questions.map(q => {
+            if (q.id === action.qid) {
+              return {
+                ...q,
+                zFront: !q.zFront
+              }
+            }
+            return q
+          })
         }
       }
     default:

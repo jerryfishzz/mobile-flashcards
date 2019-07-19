@@ -1,7 +1,7 @@
 import { getDeck } from "../utils/api";
 
 export const RECEIVE_DECK = 'RECEIVE_DECK'
-export const CHOOSE_ANSWER = 'CHOOSE_ANSWER'
+export const CHOOSE_ANSWER1 = 'CHOOSE_ANSWER1'
 export const RESET_DECK = 'RESET_DECK'
 export const TOGGLE_ZFRONT = 'TOGGLE_ZFRONT'
 
@@ -38,7 +38,7 @@ export function initializeDeck(deckId) {
 
 function chooseAnswer(userChoice, index) {
   return {
-    type: CHOOSE_ANSWER,
+    type: CHOOSE_ANSWER1,
     userChoice,
     index
   }

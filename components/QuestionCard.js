@@ -54,12 +54,12 @@ class QuestionCard extends Component {
     // })
   }
 
-  handlePress = (userChoice, index) => {
-    this.setState({userChoice})
+  // handlePress = (userChoice, index) => {
+  //   this.setState({userChoice})
 
-    const { item, onAnswer } = this.props
-    onAnswer(item.answer, userChoice, index)
-  }
+  //   const { item, onAnswer } = this.props
+  //   onAnswer(item.answer, userChoice, index)
+  // }
   
   render() {
     // const { userChoice, zFront } = this.state
@@ -84,7 +84,6 @@ class QuestionCard extends Component {
         <FlipCard
           frontAnimatedStyle={frontAnimatedStyle}
           backAnimatedStyle={backAnimatedStyle}
-          onPress={this.handlePress}
           flipCard={this.flipCard}
           {...others}
         />
@@ -94,21 +93,30 @@ class QuestionCard extends Component {
 }
 
 const mapStateToProps = (
-  { decks, currentDeck }, 
-  { item, index, restartTest }
+  { decks, currentDeck, deckStatus }, 
+  { item, index, restartTest, navigation }
 ) => {
-  // const { deckId } =  navigation.state.params
-  const { userChoice, zFront } = item.status
-// console.log(item)
+  const { deckId } =  navigation.state.params
+  // const { userChoice, zFront } = item.status
+// console.log(deckId)
+
+  const { id } = item
+// console.log(id)
+  // const currentStatus = deckStatus[deckId]
+  const [questionStatus] = deckStatus[deckId].questions.filter(q => q.id === id)
+// console.log(questionStatus)
+  const { zFront } = questionStatus
+
   return {
     // decks,
     // questions: decks[deckId].questions,
     // deckId,
     // stackQuestions: questions,
     zFront,
-    userChoice,
-    index,
+    // userChoice,
+    // index,
     restartTest,
+    id
   }
 }
 

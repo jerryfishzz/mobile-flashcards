@@ -1,4 +1,4 @@
-import { RECEIVE_DECK, CHOOSE_ANSWER, RESET_DECK, TOGGLE_ZFRONT } from "../actions/currentDeck";
+import { RECEIVE_DECK, RESET_DECK, TOGGLE_ZFRONT, CHOOSE_ANSWER1 } from "../actions/currentDeck";
 
 export default function currentDeck(state = {}, action) {
   switch (action.type) {
@@ -6,7 +6,7 @@ export default function currentDeck(state = {}, action) {
       return {
         ...action.currentDeck
       }
-    case CHOOSE_ANSWER:
+    case CHOOSE_ANSWER1:
       return {
         ...state,
         deck: {

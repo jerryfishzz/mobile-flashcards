@@ -12,7 +12,8 @@ import { connect } from 'react-redux'
 
 import { white, purple, green, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
-import { chooseAnswer, handleChooseAnswer, handleToggleZFront } from '../actions/currentDeck';
+import { chooseAnswer, handleToggleZFront } from '../actions/currentDeck';
+import { handleChooseAnswer, handleToggleZ } from '../actions/deckStatus';
 
 function YourChoice() {
   return (
@@ -26,7 +27,7 @@ function YourChoice() {
   )
 }
 
-function FrontSide({ viewHeight, item, index, userChoice, onPress }) {
+function FrontSide({ viewHeight, item, userChoice, onPress }) {
   return (
     <View style={styles.flex}>
       <View style={{minHeight: viewHeight / 2 - 50}}>  
@@ -58,8 +59,8 @@ function FrontSide({ viewHeight, item, index, userChoice, onPress }) {
         <UniversalBtn 
           disabled={userChoice !== null}
           onPress={onPress}
-          index={index}
-          layouts={[styles.forTrue, {zIndex: 2}]}
+          
+          layouts={styles.forTrue}
           content="correct"
           btnValue={true}
         />
@@ -67,7 +68,7 @@ function FrontSide({ viewHeight, item, index, userChoice, onPress }) {
         <UniversalBtn 
           disabled={userChoice !== null}
           onPress={onPress}
-          index={index}
+          
           layouts={styles.forFalse}
           content="incorrect"
           btnValue={false}
@@ -102,11 +103,11 @@ class FlipCard extends Component {
     })
   }
 
-  handlePress = (userChoice, index) => {
-    const { dispatch } = this.props
-
+  handlePress = userChoice => {
+    const { dispatch, correctAnswer, id, deckId } = this.props
+// console.log(1)
     // dispatch(chooseAnswer(userChoice, index))
-    dispatch(handleChooseAnswer(userChoice, index, this.handleComplete))
+    dispatch(handleChooseAnswer(userChoice, id, deckId, correctAnswer, this.handleComplete))
   }
 
   handleComplete = (answeredQuestions, correctChoices) => {
@@ -126,8 +127,8 @@ class FlipCard extends Component {
   }
 
   handleFlip = () => {
-    const { index, dispatch, flipCard } = this.props
-    dispatch(handleToggleZFront(index, flipCard))
+    const { deckId, id, dispatch, flipCard } = this.props
+    dispatch(handleToggleZ(deckId, id, flipCard))
   }
 
   render() {
@@ -146,7 +147,7 @@ class FlipCard extends Component {
       backAnimatedStyle,
       userChoice, 
       flipCard,
-      onPress,
+      // onPress,
       ...others
     } = this.props  
 
@@ -225,23 +226,34 @@ class FlipCard extends Component {
 }
 
 const mapStateToProps = (
-  { currentDeck }, 
-  { index, frontAnimatedStyle, backAnimatedStyle, flipCard, restartTest }
+  { currentDeck, deckStatus, decks }, 
+  { index, frontAnimatedStyle, backAnimatedStyle, flipCard, restartTest, navigation, id }
 ) => {
-  const { correctChoices, answeredQuestions } = currentDeck
-  const item = currentDeck.deck.questions[index]
-  const { userChoice } = item.status
+  const { deckId } =  navigation.state.params
+  // const deck = decks[deckId]
+  // const { correctChoices, answeredQuestions } = currentDeck
+  const item = decks[deckId].questions.filter(q => q.id === id)[0]
+  // const { userChoice } = item.status
   
+
+  
+  const correctAnswer = decks[deckId].questions.filter(q => q.id === id)[0].answer
+  const [questionStatus] = deckStatus[deckId].questions.filter(q => q.id === id)
+  const { userChoice } = questionStatus
+  // console.log(userChoice)
   return {
-    index,
+    // index,
     item,
     userChoice,
     frontAnimatedStyle, 
     backAnimatedStyle, 
     flipCard,
-    correctChoices, 
-    answeredQuestions,
-    restartTest
+    // correctChoices, 
+    // answeredQuestions,
+    restartTest,
+    correctAnswer,
+    deckId,
+    id
   }
 }
 
