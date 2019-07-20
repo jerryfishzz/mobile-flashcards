@@ -70,7 +70,7 @@ class Deck extends Component {
   }
 
   render() {
-    const { deckId, navigation, deck, content, isComplete, dispatch } = this.props
+    const { deckId, navigation, deck, content, isResetable, dispatch } = this.props
 
     return (
       <View style={[styles.flex, styles.container]}>
@@ -99,7 +99,7 @@ class Deck extends Component {
             layouts={styles.delete}
             content="delete"
           />
-          {isComplete && 
+          {isResetable && 
             <UniversalBtn 
               onPress={() => dispatch(resetDeck(deckId))}
               layouts={{marginTop: 20}}
@@ -122,14 +122,14 @@ const mapStateToProps = ({ decks, deckStatus }, { navigation }) => {
   const content = R.all(isNull)(choices)
       ? 'start quiz'
       : R.none(isNull)(choices)
-        ? 'check result'
+        ? 'check results'
         : 'resume quiz'
 
   return {
     deckId,
     deck,
     content,
-    isComplete: R.none(isNull)(choices) && choices.length !== 0
+    isResetable: !R.all(isNull)(choices)
   }
 }
 
