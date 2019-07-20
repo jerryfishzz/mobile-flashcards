@@ -5,6 +5,6 @@ import deckStatus from './deckStatus'
 
 export default combineReducers({
   decks,
-  currentDeck,
+  // currentDeck,
   deckStatus
 })

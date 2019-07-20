@@ -12,10 +12,9 @@ import { connect } from 'react-redux'
 import Carousel from 'react-native-snap-carousel';
 import { HeaderBackButton, Header } from 'react-navigation';
 
-import QuestionCard from './QuestionCard';
-import { initializeDeck } from '../actions/currentDeck';
+import QuestionCard from './QuestionCard'
 import { white, gray, black, red } from '../utils/colors'
-import { resetDeck } from '../actions/deckStatus';
+import { resetDeck } from '../actions/deckStatus'
 
 const { width: viewportWidth } = Dimensions.get('window');
 
@@ -39,101 +38,27 @@ class QuestionStack extends Component {
     }
   }
 
-  // state = {
-  //   correctChoices: 0,
-  //   answeredQuestions: 0,
-  //   stackQuestions: []
-  // }
-
   componentDidMount() {
-    const { questions, navigation, dispatch, deckId } = this.props
+    const { navigation, dispatch, deckId } = this.props
 
-    if (questions.length) {
-      // const stackQuestions = questions.map(q => ({
-      //   ...q,
-      //   status: {
-      //     userChoice : null,
-      //     zFront: true
-      //   }
-      // }))
-
-      // this.setState({stackQuestions})
-
-      navigation.setParams({
-        reset: () => dispatch(resetDeck(deckId))
-      })
-    }
+    navigation.setParams({
+      reset: () => dispatch(resetDeck(deckId))
+    })
   }
 
   updateTitle = slideIndex => {
     this.props.navigation.setParams({current: (slideIndex + 1).toString()})
   }
 
-  // handleCorrectChoice = cb => 
-  //   this.setState(({ correctChoices }) => ({
-  //     correctChoices: correctChoices + 1
-  //   }), cb)
-
-  // handleComplete = () => {
-  //   const { correctChoices, answeredQuestions } = this.state
-  //   const { questions } = this.props
-
-  //   if (answeredQuestions === questions.length) {
-  //     Alert.alert(
-  //       '',
-  //       `Correct answers: ${correctChoices} out of ${answeredQuestions}`,
-  //       [
-  //         {text: 'OK', style: 'cancel'},
-  //         {text: 'Restart', onPress: this.restartTest},
-  //       ]
-  //     )
-  //   }
-  // }
-
-  // handleAnswer = (itemAnswer, userChoice, index) => {
-  //   this.setState(({ answeredQuestions, stackQuestions }) => ({
-  //     answeredQuestions: answeredQuestions + 1,
-  //     stackQuestions: stackQuestions.map((q, i) => {
-  //       if (i === index) {
-  //         return {
-  //           ...q,
-  //           status: {
-  //             ...q.status,
-  //             userChoice
-  //           }
-  //         }
-  //       }
-  //       return q
-  //     })
-  //   }), () => {
-  //     if (itemAnswer === userChoice) {
-  //       this.handleCorrectChoice(this.handleComplete)
-  //     } else {
-  //       this.handleComplete()
-  //     }
-  //   })
-  // }
-
   restartTest = () => {
-    // const { deckId, questions, navigation } = this.props
     const { dispatch, deckId } = this.props
 
     this._carousel.snapToItem(0)
     dispatch(resetDeck(deckId))
   }
   
-
   render() {
-    const { questions, stackQuestions, ...others } = this.props
-    // const { stackQuestions } = this.state
-
-    // if (!stackQuestions.length) {
-    //   return (
-    //     <View>
-    //       <Text>Loading</Text>
-    //     </View>
-    //   )
-    // }
+    const { questions, ...others } = this.props
 
     return (
       <Carousel
@@ -143,7 +68,6 @@ class QuestionStack extends Component {
         renderItem={({item, index}) => (
           <QuestionCard 
             item={item}
-            onAnswer={this.handleAnswer}
             restartTest={this.restartTest}
             {...others}
           />
@@ -156,16 +80,12 @@ class QuestionStack extends Component {
   }
 }  
 
-  
-const mapStateToProps = ({ decks, currentDeck }, { navigation }) => {
+const mapStateToProps = ({ decks }, { navigation }) => {
   const { deckId } =  navigation.state.params
-  // const { deck: { questions } } = currentDeck
 
   return {
-    // decks,
     questions: decks[deckId].questions,
     deckId,
-    // stackQuestions: questions
   }
 }
 

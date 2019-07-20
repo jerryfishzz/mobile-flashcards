@@ -14,7 +14,6 @@ const UniversalBtn = ({
   layouts, 
   content,
   btnValue,
-  // index
 }) => {
   const btnText = R.toUpper(content)
 

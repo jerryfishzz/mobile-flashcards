@@ -5,7 +5,7 @@ import {
   REMOVE_DECK 
 } from "../actions";
 
-function decks(state = null, action) {
+function decks(state = null, action) { // null means the default state
   switch (action.type) {
     case RECEIVE_DECKS:
       return {

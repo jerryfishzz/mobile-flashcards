@@ -2,17 +2,11 @@ import React, { Component } from 'react'
 import { View, Animated, Text } from 'react-native'
 import { connect } from 'react-redux'
 
-
-import FlipCard from './FlipCard';
+import FlipCard from './FlipCard'
 
 class QuestionCard extends Component {
   constructor(props) {
     super(props)
-    
-    this.state = {
-      userChoice : null,
-      zFront: true
-    }
 
     this.value = 0
     this.animatedValue = new Animated.Value(0)
@@ -35,35 +29,22 @@ class QuestionCard extends Component {
   }
 
   flipCard = () => {
-    // this.setState(prevState => ({
-    //   zFront: !prevState.zFront
-    // }), () => {
-      if (this.value >= 90) {
-        Animated.spring(this.animatedValue, {
-          toValue: 0,
-          friction: 8,
-          tension: 10
-        }).start()
-      } else {
-        Animated.spring(this.animatedValue, {
-          toValue: 180,
-          friction: 8,
-          tension: 10
-        }).start()
-      }
-    // })
+    if (this.value >= 90) {
+      Animated.spring(this.animatedValue, {
+        toValue: 0,
+        friction: 8,
+        tension: 10
+      }).start()
+    } else {
+      Animated.spring(this.animatedValue, {
+        toValue: 180,
+        friction: 8,
+        tension: 10
+      }).start()
+    }
   }
 
-  // handlePress = (userChoice, index) => {
-  //   this.setState({userChoice})
-
-  //   const { item, onAnswer } = this.props
-  //   onAnswer(item.answer, userChoice, index)
-  // }
-  
   render() {
-    // const { userChoice, zFront } = this.state
-    // const { item, index, zFront, userChoice } = this.props
     const { zFront, ...others } = this.props
 
     const frontAnimatedStyle = {
@@ -92,30 +73,15 @@ class QuestionCard extends Component {
   }
 }
 
-const mapStateToProps = (
-  { decks, currentDeck, deckStatus }, 
-  { item, index, restartTest, navigation }
-) => {
+const mapStateToProps = ({ deckStatus }, { navigation, item }) => {
   const { deckId } =  navigation.state.params
-  // const { userChoice, zFront } = item.status
-// console.log(deckId)
-
   const { id } = item
-// console.log(id)
-  // const currentStatus = deckStatus[deckId]
+
   const [questionStatus] = deckStatus[deckId].questions.filter(q => q.id === id)
-// console.log(questionStatus)
   const { zFront } = questionStatus
 
   return {
-    // decks,
-    // questions: decks[deckId].questions,
-    // deckId,
-    // stackQuestions: questions,
     zFront,
-    // userChoice,
-    // index,
-    restartTest,
     id
   }
 }

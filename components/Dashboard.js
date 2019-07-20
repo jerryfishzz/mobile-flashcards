@@ -8,7 +8,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 
-import { getDecks, uuidv1 } from '../utils/api'
+import { getDecks } from '../utils/api'
 import { receiveDecks } from '../actions';
 import DeckCard from './DeckCard';
 import { handleInitializeStatus } from '../actions/deckStatus';
@@ -16,8 +16,6 @@ import { handleInitializeStatus } from '../actions/deckStatus';
 class Dashboard extends Component {
   componentDidMount() {
     const { dispatch } = this.props
-
-    // AsyncStorage.clear() This will lead to error in IOS
   
     AsyncStorage.getAllKeys()
       .then(AsyncStorage.multiRemove)
@@ -43,6 +41,7 @@ class Dashboard extends Component {
       <View style={styles.container}>
         <FlatList 
           data={deckKeys}
+          extraData={deckKeys}
           renderItem={({ item }) => (
             <DeckCard
               id={item}
@@ -56,12 +55,6 @@ class Dashboard extends Component {
   }
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
-})
-
 const mapStateToProps = ({ decks, deckStatus }) => {
   const deckKeys = decks ? Object.keys(decks) : null;
 
@@ -71,5 +64,11 @@ const mapStateToProps = ({ decks, deckStatus }) => {
     deckStatus
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
+})
 
 export default connect(mapStateToProps)(Dashboard)

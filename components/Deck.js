@@ -7,14 +7,12 @@ import {
   Alert,
 } from 'react-native'
 import { connect } from 'react-redux'
-import { white, gray, black, red } from '../utils/colors'
-import UniversalBtn from './UniversalBtn';
-// import { removeDeckAndGoBack } from '../actions';
+import { NavigationActions, HeaderBackButton } from 'react-navigation'
 import { Ionicons } from '@expo/vector-icons'
-import { getDeck } from '../utils/api';
-import { initializeDeck } from '../actions/currentDeck';
+
+import { white, gray, black, red } from '../utils/colors'
+import UniversalBtn from './UniversalBtn'
 import { removeDeckAndGoHome } from '../actions/shared';
-import { NavigationActions, HeaderBackButton } from 'react-navigation';
 
 class Deck extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -54,26 +52,6 @@ class Deck extends Component {
     }
   }
 
-  // state = {
-  //   correctChoices: 0,
-  //   answeredQuestions: 0,
-  //   deck: {}
-  // }
-
-  componentDidMount() {
-    const { navigation, dispatch } = this.props
-    const { deckId } =  navigation.state.params
-
-    dispatch(initializeDeck(deckId))
-      // .then(({ currentDeck: { correctChoices, answeredQuestions, deck }}) => {
-      //   this.setState({
-      //     correctChoices,
-      //     answeredQuestions,
-      //     deck
-      //   })
-      // })
-  }
-
   confirmDelete = () => {
     Alert.alert(
       '',
@@ -91,15 +69,6 @@ class Deck extends Component {
 
   render() {
     const { deckId, navigation, deck } = this.props
-    // const { deck } = this.state
-
-    if (deck.title === undefined) {
-      return (
-        <View>
-          <Text>Loading</Text>
-        </View>
-      )
-    }
 
     return (
       <View style={[styles.flex, styles.container]}>
@@ -141,21 +110,17 @@ const mapStateToProps = ({ decks }, { navigation }) => {
   return {
     deckId,
     deck, 
-    navigation
   }
 }
 
 const mapDispatchToProps = (dispatch, { navigation }) => {
   const { deckId } = navigation.state.params
-  const goHome = () => navigation.dispatch(
-    NavigationActions.navigate({ 
+  const goHome = () => navigation.dispatch(NavigationActions.navigate({ 
       routeName: 'Decks'
-    })
-  )
+    }))
 
   return {
     remove: () => dispatch(removeDeckAndGoHome(deckId, goHome)),
-    dispatch
   }
 }
 

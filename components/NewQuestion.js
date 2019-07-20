@@ -9,7 +9,6 @@ import {
   ScrollView,
 } from 'react-native'
 import { connect } from 'react-redux'
-import { NavigationActions } from 'react-navigation';
 
 import { 
   white, 
@@ -18,10 +17,9 @@ import {
   gray, 
   lightGray 
 } from '../utils/colors'
-// import { handleAddQuestion } from '../actions';
-import UniversalBtn from './UniversalBtn';
-import { uuidv1 } from '../utils/api';
-import { handleAddQuestion } from '../actions/shared';
+import UniversalBtn from './UniversalBtn'
+import { uuidv1 } from '../utils/api'
+import { handleAddQuestion } from '../actions/shared'
 
 class NewQuestion extends Component {
   static navigationOptions = () => ({
@@ -131,12 +129,10 @@ class NewQuestion extends Component {
   }
 }
 
-const mapStateToProps = ({ decks }, { navigation }) => {
+const mapStateToProps = (state, { navigation }) => {
   const { deckId } =  navigation.state.params
 
   return {
-    decks,
-    questions: decks[deckId].questions,
     deckId
   }
 }

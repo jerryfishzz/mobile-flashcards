@@ -8,15 +8,13 @@ import {
   Keyboard,
   TouchableWithoutFeedback,
 } from 'react-native'
-import { NavigationActions } from 'react-navigation';
 import * as R from 'ramda'
 import { connect } from 'react-redux'
 
 import { white, lightGray } from '../utils/colors'
-// import { handleAddDeck } from '../actions';
-import { getDecks } from '../utils/api';
-import UniversalBtn from './UniversalBtn';
-import { handleAddDeck } from '../actions/shared';
+import { getDecks } from '../utils/api'
+import UniversalBtn from './UniversalBtn'
+import { handleAddDeck } from '../actions/shared'
 
 class NewDeck extends Component {
   state = {
@@ -28,6 +26,7 @@ class NewDeck extends Component {
     const { deck } = this.state
     const { dispatch, navigation } = this.props
 
+    // Delete spaces in the title and combine them into one
     const noSpace = n => n !== ' '
     const noSapceArray = R.filter(noSpace)(deck)
     const key = R.join('')(noSapceArray)
@@ -65,9 +64,6 @@ class NewDeck extends Component {
                     submitting: false,
                     deck: ''
                   }, () => {
-                    // navigation.dispatch(NavigationActions.navigate({ 
-                    //   routeName: 'Decks'
-                    // }))
                     navigation.navigate(
                       'Deck', 
                       { deckId: key }

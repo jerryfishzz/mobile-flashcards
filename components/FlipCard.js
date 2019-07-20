@@ -12,7 +12,6 @@ import { connect } from 'react-redux'
 
 import { white, purple, green, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
-import { chooseAnswer, handleToggleZFront } from '../actions/currentDeck';
 import { handleChooseAnswer, handleToggleZ } from '../actions/deckStatus';
 
 function YourChoice() {
@@ -105,49 +104,42 @@ class FlipCard extends Component {
 
   handlePress = userChoice => {
     const { dispatch, correctAnswer, id, deckId } = this.props
-// console.log(1)
-    // dispatch(chooseAnswer(userChoice, index))
-    dispatch(handleChooseAnswer(userChoice, id, deckId, correctAnswer, this.handleComplete))
+
+    dispatch(handleChooseAnswer(
+      userChoice, 
+      id, 
+      deckId, 
+      correctAnswer, 
+      this.handleComplete
+    ))
   }
 
   handleComplete = (answeredQuestions, correctChoices) => {
     const { restartTest } = this.props
-    // const { questions } = this.props
-    // const { currentDeck: { answeredQuestions, correctChoices } } = getState()
-    // if (answeredQuestions === questions.length) {
-      Alert.alert(
-        '',
-        `Correct answers: ${correctChoices} out of ${answeredQuestions}`,
-        [
-          {text: 'OK', style: 'cancel'},
-          {text: 'Restart', onPress: restartTest},
-        ]
-      )
-    // }
+    
+    Alert.alert(
+      '',
+      `Correct answers: ${correctChoices} out of ${answeredQuestions}`,
+      [
+        {text: 'OK', style: 'cancel'},
+        {text: 'Restart', onPress: restartTest},
+      ]
+    )
   }
 
   handleFlip = () => {
     const { deckId, id, dispatch, flipCard } = this.props
+
     dispatch(handleToggleZ(deckId, id, flipCard))
   }
 
   render() {
     const { viewWidth, viewHeight } = this.state
-    // const { 
-    //   item, 
-    //   index,
-    //   frontAnimatedStyle, 
-    //   backAnimatedStyle,
-    //   onPress,
-    //   userChoice, 
-    //   flipCard } = this.props  
 
     const { 
       frontAnimatedStyle, 
       backAnimatedStyle,
       userChoice, 
-      flipCard,
-      // onPress,
       ...others
     } = this.props  
 
@@ -225,35 +217,17 @@ class FlipCard extends Component {
   }
 }
 
-const mapStateToProps = (
-  { currentDeck, deckStatus, decks }, 
-  { index, frontAnimatedStyle, backAnimatedStyle, flipCard, restartTest, navigation, id }
-) => {
+const mapStateToProps = ({ deckStatus }, { item, navigation, id }) => {
   const { deckId } =  navigation.state.params
-  // const deck = decks[deckId]
-  // const { correctChoices, answeredQuestions } = currentDeck
-  const item = decks[deckId].questions.filter(q => q.id === id)[0]
-  // const { userChoice } = item.status
   
-
-  
-  const correctAnswer = decks[deckId].questions.filter(q => q.id === id)[0].answer
+  const correctAnswer = item.answer
   const [questionStatus] = deckStatus[deckId].questions.filter(q => q.id === id)
   const { userChoice } = questionStatus
-  // console.log(userChoice)
+  
   return {
-    // index,
-    item,
     userChoice,
-    frontAnimatedStyle, 
-    backAnimatedStyle, 
-    flipCard,
-    // correctChoices, 
-    // answeredQuestions,
-    restartTest,
     correctAnswer,
-    deckId,
-    id
+    deckId
   }
 }
 
