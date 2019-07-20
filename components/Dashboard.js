@@ -9,7 +9,7 @@ import {
 import { connect } from 'react-redux'
 
 import { getDecks } from '../utils/api'
-import { receiveDecks } from '../actions';
+import { receiveDecks } from '../actions/decks';
 import DeckCard from './DeckCard';
 import { handleInitializeStatus } from '../actions/deckStatus';
 

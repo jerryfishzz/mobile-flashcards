@@ -1,5 +1,5 @@
 import { addDeckToApp, removeDeckFromApp, getDecks, modifyDecks } from "../utils/api";
-import { addDeck, removeDeck, addQuestion } from ".";
+import { addDeck, removeDeck, addQuestion } from "./decks";
 import { handleAddStatus, removeStatus, addQuestionStatus } from "./deckStatus";
 
 export function handleAddDeck({ key, entry }) {

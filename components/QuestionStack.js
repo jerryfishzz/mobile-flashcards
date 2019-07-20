@@ -28,7 +28,7 @@ class QuestionStack extends Component {
         <HeaderBackButton 
           onPress={() => {
             navigation.goBack()
-            reset()
+            
           }} 
           title='Deck'
           backTitleVisible={true}

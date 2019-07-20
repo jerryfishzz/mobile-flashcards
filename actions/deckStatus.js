@@ -71,7 +71,6 @@ export function addQuestionStatus(key, questionId) {
 }
 
 function chooseAnswer1(userChoice, id, key, correctAnswer) {
-  // console.log(userChoice, id, key, correctAnswer)
   return {
     type: CHOOSE_ANSWER,
     userChoice,
@@ -82,14 +81,12 @@ function chooseAnswer1(userChoice, id, key, correctAnswer) {
 }
 
 export function handleChooseAnswer(userChoice, id, key, correctAnswer, cb) {
-  // console.log(2)
   return (dispatch, getState) => {
-    // console.log(3)
     dispatch(chooseAnswer1(userChoice, id, key, correctAnswer))
-    // console.log(4)
+
     const { deckStatus } = getState()
     const { correctChoices, answeredQuestions, questions } = deckStatus[key]
-// console.log(5)
+    
     if (answeredQuestions === questions.length) {
       cb(answeredQuestions, correctChoices)
     }

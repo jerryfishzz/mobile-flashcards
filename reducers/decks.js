@@ -3,7 +3,7 @@ import {
   ADD_DECK, 
   ADD_QUESTION, 
   REMOVE_DECK 
-} from "../actions";
+} from "../actions/decks";
 
 function decks(state = null, action) { // null means the default state
   switch (action.type) {

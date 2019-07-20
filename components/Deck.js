@@ -9,10 +9,12 @@ import {
 import { connect } from 'react-redux'
 import { NavigationActions, HeaderBackButton } from 'react-navigation'
 import { Ionicons } from '@expo/vector-icons'
+import * as R from 'ramda'
 
 import { white, gray, black, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
 import { removeDeckAndGoHome } from '../actions/shared';
+import { resetDeck } from '../actions/deckStatus';
 
 class Deck extends Component {
   static navigationOptions = ({ navigation }) => {
@@ -68,7 +70,7 @@ class Deck extends Component {
   }
 
   render() {
-    const { deckId, navigation, deck } = this.props
+    const { deckId, navigation, deck, content, isComplete, dispatch } = this.props
 
     return (
       <View style={[styles.flex, styles.container]}>
@@ -90,26 +92,44 @@ class Deck extends Component {
               }
             )}
             layouts={styles.quiz}
-            content="Start Quiz"
+            content={content}
           />
           <UniversalBtn 
             onPress={this.confirmDelete}
             layouts={styles.delete}
             content="delete"
           />
+          {isComplete && 
+            <UniversalBtn 
+              onPress={() => dispatch(resetDeck(deckId))}
+              layouts={{marginTop: 20}}
+              content="reset quiz"
+            />
+          }
         </View>
       </View>
     )
   }
 }
 
-const mapStateToProps = ({ decks }, { navigation }) => {
+const mapStateToProps = ({ decks, deckStatus }, { navigation }) => {
   const { deckId } = navigation.state.params
   const deck = decks[deckId]
+  const status = deckStatus[deckId]
+  const choices = status ? status.questions.map(q => q.userChoice) : []
+  
+  const isNull = R.equals(null)
+  const content = R.all(isNull)(choices)
+      ? 'start quiz'
+      : R.none(isNull)(choices)
+        ? 'check result'
+        : 'resume quiz'
 
   return {
     deckId,
-    deck, 
+    deck,
+    content,
+    isComplete: R.none(isNull)(choices) && choices.length !== 0
   }
 }
 
@@ -121,6 +141,7 @@ const mapDispatchToProps = (dispatch, { navigation }) => {
 
   return {
     remove: () => dispatch(removeDeckAndGoHome(deckId, goHome)),
+    dispatch
   }
 }
 
