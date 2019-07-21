@@ -87,6 +87,7 @@ export function handleChooseAnswer(userChoice, id, key, correctAnswer, cb) {
     const { deckStatus } = getState()
     const { correctChoices, answeredQuestions, questions } = deckStatus[key]
     
+    // All the questions have been answered
     if (answeredQuestions === questions.length) {
       cb(answeredQuestions, correctChoices)
     }

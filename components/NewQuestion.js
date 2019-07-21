@@ -52,12 +52,12 @@ class NewQuestion extends Component {
           }
 
     this.setState({
-      submitting: true
+      submitting: true // Disable the submit button while submitting asynchronously
     }, () => {
       dispatch(handleAddQuestion(deckId, newQuestion, goBack))
         .then(() => {
           this.setState({
-            submitting: false
+            submitting: false // Enable submit button when submitting done
           })
         })
     })

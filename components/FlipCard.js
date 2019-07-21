@@ -27,6 +27,7 @@ function YourChoice() {
   )
 }
 
+// Front side UI
 function FrontSide({ viewHeight, item, userChoice, onPress }) {
   return (
     <View style={styles.flex}>
@@ -78,6 +79,7 @@ function FrontSide({ viewHeight, item, userChoice, onPress }) {
   )
 }
 
+// Back side UI
 function BackSide({ item }) {
   return (
     <View style={styles.flex}>
@@ -94,6 +96,7 @@ class FlipCard extends Component {
     viewHeight: 0
   }
   
+  // Get the question area size
   _onLayout = e => {
     const { width, height } = e.nativeEvent.layout
 
@@ -172,7 +175,7 @@ class FlipCard extends Component {
                   flexGrow: 1,
                 }}
               >
-                {userChoice !== null
+                {userChoice !== null // Judge flipping is enbale or not
                   ? <TouchableOpacity 
                       style={styles.flex} 
                       onPress={this.handleFlip}

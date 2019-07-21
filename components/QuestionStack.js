@@ -29,10 +29,12 @@ class QuestionStack extends Component {
     }
   }
 
+  // Update the header to display which card you are working on when swiping
   updateTitle = slideIndex => {
     this.props.navigation.setParams({current: (slideIndex + 1).toString()})
   }
 
+  // Go back to the first card in the carousal and reset the deck to the initial status
   restartTest = () => {
     const { dispatch, deckId } = this.props
 
@@ -43,6 +45,7 @@ class QuestionStack extends Component {
   render() {
     const { questions, ...others } = this.props
 
+    // Use the carousal library react-native-snap-carousel here
     return (
       <Carousel
         ref={(c) => {this._carousel = c}}

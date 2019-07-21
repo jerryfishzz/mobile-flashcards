@@ -8,6 +8,7 @@ class QuestionCard extends Component {
   constructor(props) {
     super(props)
 
+    // Flipping card setting
     this.value = 0
     this.animatedValue = new Animated.Value(0)
     this.animatedValue.addListener(({ value }) => {
@@ -47,6 +48,7 @@ class QuestionCard extends Component {
   render() {
     const { zFront, ...others } = this.props
 
+    // Set the zFront value for the side when it should be displayed on top
     const frontAnimatedStyle = {
       zIndex: zFront ? 1 : null,
       transform: [

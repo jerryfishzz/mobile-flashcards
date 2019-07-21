@@ -21,6 +21,7 @@ class Deck extends Component {
     const { deckId } =  navigation.state.params
 
     return {
+      // Add question button
       headerRight: (
         <TouchableOpacity
           onPress={() => navigation.navigate(
@@ -37,6 +38,8 @@ class Deck extends Component {
         </TouchableOpacity>
       ),
       headerBackTitle: 'Deck',
+
+      // Customized back button
       headerLeft: (
         <HeaderBackButton 
           onPress={() => {
@@ -118,6 +121,7 @@ const mapStateToProps = ({ decks, deckStatus }, { navigation }) => {
   const status = deckStatus[deckId]
   const choices = status ? status.questions.map(q => q.userChoice) : []
   
+  // Dispalaying difference names for the same button
   const isNull = R.equals(null)
   const content = R.all(isNull)(choices)
       ? 'start quiz'
@@ -129,7 +133,7 @@ const mapStateToProps = ({ decks, deckStatus }, { navigation }) => {
     deckId,
     deck,
     content,
-    isResetable: !R.all(isNull)(choices)
+    isResetable: !R.all(isNull)(choices) // Check whether to show the reset button 
   }
 }
 
