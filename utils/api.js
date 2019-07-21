@@ -2,7 +2,7 @@ import { AsyncStorage } from 'react-native'
 
 export const uuidv1 = require('uuid/v1')
 
-export const FLASHCARD_KEY = 'Flashcard'
+export const FLASHCARD_KEY = 'Flashcard:stackcard'
 
 export const db = {
   CommonSense: {
@@ -101,4 +101,3 @@ export function removeDeckFromApp(deckId) {
       return result
     })
 }
-

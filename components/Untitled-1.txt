@@ -1,3 +1,0 @@
-
-
-Logic for notification has been implemented. Notifications are generated at a specific time if the user hasn't completed at least one quiz for that day.

@@ -1,26 +1,18 @@
 import React, { Component } from 'react'
-import { 
-  View, 
-  Text, 
-  FlatList, 
-  Platform, 
-  Dimensions,
-  Button,
-  Alert
-} from 'react-native'
+import { Dimensions } from 'react-native'
 import { connect } from 'react-redux'
 import Carousel from 'react-native-snap-carousel';
-import { HeaderBackButton, Header } from 'react-navigation';
+import { HeaderBackButton } from 'react-navigation';
 
 import QuestionCard from './QuestionCard'
-import { white, gray, black, red } from '../utils/colors'
+import { white } from '../utils/colors'
 import { resetDeck } from '../actions/deckStatus'
 
 const { width: viewportWidth } = Dimensions.get('window');
 
 class QuestionStack extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { counts, current, reset } = navigation.state.params
+    const { counts, current } = navigation.state.params
 
     return {
       title: `${current} / ${counts}`,
@@ -28,7 +20,6 @@ class QuestionStack extends Component {
         <HeaderBackButton 
           onPress={() => {
             navigation.goBack()
-            
           }} 
           title='Deck'
           backTitleVisible={true}
@@ -36,14 +27,6 @@ class QuestionStack extends Component {
         />
       ),
     }
-  }
-
-  componentDidMount() {
-    const { navigation, dispatch, deckId } = this.props
-
-    navigation.setParams({
-      reset: () => dispatch(resetDeck(deckId))
-    })
   }
 
   updateTitle = slideIndex => {

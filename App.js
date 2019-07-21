@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component } from 'react'
 import { StyleSheet, View, Platform, StatusBar } from 'react-native'
 import { createStore } from 'redux'
 import { Provider } from 'react-redux'
@@ -15,10 +15,10 @@ import { white, purple } from './utils/colors'
 import Dashboard from './components/Dashboard'
 import QuestionStack from './components/QuestionStack'
 import NewQuestion from './components/NewQuestion'
-import Test from './components/Test'
 import Deck from './components/Deck'
 import NewDeck from './components/NewDeck'
 import middleware from './middleware'
+import { setLocalNotification } from './utils/helpers'
 
 function FlashcardStatusBar({ backgroundColor, ...props }) {
   return (
@@ -102,16 +102,21 @@ const Stack = createStackNavigator({
 
 const MainNavigator = createAppContainer(Stack)
 
-export default function App() {
-  return (
-    <Provider store={createStore(reducer, middleware)}>
-      <View style={styles.flex}>
-        <FlashcardStatusBar backgroundColor={purple} barStyle='light-content' />
-        <MainNavigator />
-        {/* <Test /> */}
-      </View>
-    </Provider>
-  )
+export default class App extends Component {
+  componentDidMount() {
+    setLocalNotification()
+  }
+
+  render() {
+    return (
+      <Provider store={createStore(reducer, middleware)}>
+        <View style={styles.flex}>
+          <FlashcardStatusBar backgroundColor={purple} barStyle='light-content' />
+          <MainNavigator />
+        </View>
+      </Provider>
+    )
+  }
 }
 
 const styles = StyleSheet.create({

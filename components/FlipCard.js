@@ -13,6 +13,7 @@ import { connect } from 'react-redux'
 import { white, purple, green, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
 import { handleChooseAnswer, handleToggleZ } from '../actions/deckStatus';
+import { clearLocalNotification, setLocalNotification } from '../utils/helpers';
 
 function YourChoice() {
   return (
@@ -116,13 +117,23 @@ class FlipCard extends Component {
 
   handleComplete = (answeredQuestions, correctChoices) => {
     const { restartTest } = this.props
+    const handleNotifications = () => {
+      clearLocalNotification()
+        .then(setLocalNotification)
+    }
     
     Alert.alert(
       '',
       `Correct answers: ${correctChoices} out of ${answeredQuestions}`,
       [
-        {text: 'OK', style: 'cancel'},
-        {text: 'Restart', onPress: restartTest},
+        {text: 'OK', style: 'cancel', onPress: handleNotifications},
+        {text: 
+          'Restart', 
+          onPress: () => {
+            restartTest()
+            handleNotifications()
+          }
+        },
       ]
     )
   }

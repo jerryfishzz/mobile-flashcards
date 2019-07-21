@@ -1,5 +1,12 @@
-import { RECEIVE_STATUS, INITIALIZE_STATUS, ADD_STATUS, REMOVE_STATUS, ADD_QUESTION_STATUS, RESET_DECK, CHOOSE_ANSWER, TOGGLE_Z } from "../actions/deckStatus";
-// import { CHOOSE_ANSWER } from "../actions/currentDeck";
+import { 
+  INITIALIZE_STATUS, 
+  ADD_STATUS, 
+  REMOVE_STATUS, 
+  ADD_QUESTION_STATUS, 
+  RESET_DECK, 
+  CHOOSE_ANSWER, 
+  TOGGLE_Z 
+} from "../actions/deckStatus"
 
 export default function deckStatus(state = {}, action) {
   switch (action.type) {
