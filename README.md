@@ -46,8 +46,14 @@ Just `yarn install` and `yarn start`
 
 ## Other libraries included
 
-- **Ramda**  A useful JS library with functional programming methodology
+- **[Ramda]**  A useful JS library with functional programming methodology.
 
-- **react-native-snap-carousel** The carousal functionality
+- **[react-native-snap-carousel]** The carousal functionality
 
-- **uuid** UUID generator for questions
+- **[uuid]** UUID generator for questions
+
+[Ramda]: https://ramdajs.com/
+
+[react-native-snap-carousel]: https://github.com/archriss/react-native-snap-carousel
+
+[uuid]: https://www.npmjs.com/package/uuid
