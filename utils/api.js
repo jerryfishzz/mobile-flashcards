@@ -48,25 +48,22 @@ export const db = {
   }
 }
 
-export function getDecks() {
-  return AsyncStorage.getItem(FLASHCARD_KEY)
-    .then(res => {
-      if (!res) {
-        AsyncStorage.setItem(FLASHCARD_KEY, JSON.stringify(db))
-        return db
-      }
+export async function getDecks() {
+  const res = await AsyncStorage.getItem(FLASHCARD_KEY)
 
-      return JSON.parse(res)
-    })
+  if (!res) {
+    AsyncStorage.setItem(FLASHCARD_KEY, JSON.stringify(db))
+    return db
+  }
+
+  return JSON.parse(res)
 }
 
-export function getDeck(deckId) {
-  return AsyncStorage.getItem(FLASHCARD_KEY)
-    .then(res => {
-      const decks = JSON.parse(res)
+export async function getDeck(deckId) {
+  const res = await AsyncStorage.getItem(FLASHCARD_KEY)
 
-      return decks[deckId]
-    })
+  const decks = JSON.parse(res)
+  return decks[deckId]
 }
 
 export function modifyDecks(newDecks) {
@@ -77,17 +74,14 @@ export function addDeckToApp({ key, entry }) {
   return AsyncStorage.mergeItem(FLASHCARD_KEY, JSON.stringify({[key]: entry}))
 }
 
-export function removeDeckFromApp(deckId) {
-  return AsyncStorage.getItem(FLASHCARD_KEY)
-    .then(JSON.parse)
-    .then(decks => 
-      Object.keys(decks)
-        .filter(item => item !== deckId)
-        .reduce((acc, cur) => {
-          return {...acc, [cur]: decks[cur]}
-        }, {}))
-    .then(result => {
-      AsyncStorage.setItem(FLASHCARD_KEY, JSON.stringify(result))
-      return result
-    })
+export async function removeDeckFromApp(deckId) {
+  const res = await AsyncStorage.getItem(FLASHCARD_KEY)
+  const decks = JSON.parse(res)
+  const result = Object.keys(decks).filter(item => item !== deckId)
+    .reduce((acc, cur) => {
+      return {...acc, [cur]: decks[cur]}
+    }, {})
+
+  AsyncStorage.setItem(FLASHCARD_KEY, JSON.stringify(result))
+  return result
 }
