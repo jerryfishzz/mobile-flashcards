@@ -261,11 +261,6 @@ const styles = StyleSheet.create({
     backgroundColor: red,
     marginBottom: 20
   },
-  yourChoice: {
-    fontStyle: 'italic',
-    textAlign: 'center',
-    color: purple
-  }
 })
 
 export default connect(mapStateToProps)(FlipCard)

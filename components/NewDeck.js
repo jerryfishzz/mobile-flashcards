@@ -5,8 +5,7 @@ import {
   TextInput, 
   KeyboardAvoidingView,
   StyleSheet,
-  Keyboard,
-  TouchableWithoutFeedback,
+  ScrollView
 } from 'react-native'
 import * as R from 'ramda'
 import { connect } from 'react-redux'
@@ -24,61 +23,49 @@ class NewDeck extends Component {
 
   submit = () => {
     const { deck } = this.state
-    const { dispatch, navigation } = this.props
 
     // Delete spaces in the title and combine them into one
     const noSpace = n => n !== ' '
-    const noSapceArray = R.filter(noSpace)(deck)
-    const key = R.join('')(noSapceArray)
+    const noSpaceArray = R.filter(noSpace)(deck)
+    const key = R.join('')(noSpaceArray)
     
     const entry = {
       title: deck,
       questions: []
     }
 
-    // For dismissing keyboard working properly after alert, 
-    // need to hack a little
-    const alertAndDismiss = alertText => {
-      Keyboard.dismiss()
-      setTimeout(() => alert(alertText), 50)
-    } 
+    this.validateNewDeck(key, entry)
+  }
+
+  validateNewDeck = (key, entry) => {
+    const { dispatch, navigation } = this.props
 
     this.setState(
       {submitting: true}, 
-      () => {
-        getDecks()
-          .then(decks => Object.keys(decks).map(key => R.toLower(key)))
-          .then(keys => { // Check duplicate deck name
-            if (keys.indexOf(R.toLower(key)) !== -1) {
-              const alertText = 'Deck with the same name already exists'
-              alertAndDismiss(alertText)
+      async () => {
+        const decks = await getDecks()
+        const keys = Object.keys(decks).map(key => R.toLower(key))
 
-              this.setState({
-                submitting: false,
-                deck: ''
-              })
-            } else {
-              dispatch(handleAddDeck({ key, entry }))
-                .then(() => {
-                  this.setState({
-                    submitting: false,
-                    deck: ''
-                  }, () => {
-                    navigation.navigate(
-                      'Deck', 
-                      { deckId: key }
-                    )
-                  })
-                })
-                .catch(err => {
-                  alertAndDismiss('Error occurs')
-                  console.log(err)
-                  this.setState({
-                    submitting: false,
-                  })
-                })
-            }
+        if (keys.indexOf(R.toLower(key)) !== -1) {
+          alert('Deck with the same name already exists')
+
+          this.setState({
+            submitting: false,
+            deck: ''
           })
+        } else {
+          await dispatch(handleAddDeck({ key, entry }))
+            
+          this.setState({
+            submitting: false,
+            deck: ''
+          }, () => {
+            navigation.navigate(
+              'Deck', 
+              { deckId: key }
+            )
+          })
+        }
       }
     )
   }
@@ -87,13 +74,14 @@ class NewDeck extends Component {
     const { deck, submitting } = this.state
 
     return (
-      <TouchableWithoutFeedback 
-        onPress={Keyboard.dismiss} 
-        accessible={false}
+      <KeyboardAvoidingView 
+        behavior="padding"
+        style={[styles.flex, styles.container]}
       >
-        <KeyboardAvoidingView 
-          behavior="padding"
-          style={[styles.flex, styles.container]}
+        <ScrollView
+          contentContainerStyle={{
+            flexGrow: 1,
+          }}
         >
           <Text style={styles.mainText}>
             Name of the new deck
@@ -113,8 +101,8 @@ class NewDeck extends Component {
             layouts={[{marginBottom: 100}]}
             content="create deck"
           />
-        </KeyboardAvoidingView>
-      </TouchableWithoutFeedback>
+        </ScrollView>
+      </KeyboardAvoidingView>
     )
   }
 }
