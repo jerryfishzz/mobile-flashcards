@@ -34,7 +34,7 @@ The developing environment uses Expo and is only tested on iOS platform. No Andr
 
 - The new deck view will check duplicate names. If any duplicate detected, it will give an alert and cancel the operation.
 
-- There are two stores working for this app. 
+- There are two stores working for this app.
 
   One is **decks** for all the data communicating between app and the database. Data in this store should be always identical with the database.
   
