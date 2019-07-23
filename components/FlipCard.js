@@ -15,18 +15,6 @@ import UniversalBtn from './UniversalBtn'
 import { handleChooseAnswer, handleToggleZ } from '../actions/deckStatus';
 import { clearLocalNotification, setLocalNotification } from '../utils/helpers';
 
-function YourChoice() {
-  return (
-    <View>
-      <Text 
-        style={styles.yourChoice}
-      >
-        Your choice
-      </Text>
-    </View>
-  )
-}
-
 // Front side UI
 function FrontSide({ viewHeight, item, userChoice, onPress }) {
   return (
@@ -38,16 +26,18 @@ function FrontSide({ viewHeight, item, userChoice, onPress }) {
         {userChoice !== null
           ? <View style={{marginTop: 20}}>
               <View style={[{flexDirection: 'row'}]}>
-                <Text style={styles.cardTextSecondary}>Answer </Text>
                 <Text 
                   style={[
                     styles.cardTextSecondary, 
-                    item.answer 
+                    userChoice 
                       ? {color: green} 
                       : {color: red}
                   ]}
                 >
-                  {item.answer ? 'Correct' : 'Incorrect'}
+                  {userChoice ? 'Correct.' : 'Incorrect.'}
+                </Text>
+                <Text style={styles.cardTextSecondary}>
+                  {userChoice ? ' Congratulations!' : ' Try harder.' }
                 </Text>
               </View> 
             </View>
@@ -56,7 +46,6 @@ function FrontSide({ viewHeight, item, userChoice, onPress }) {
       </View>
 
       <View style={{marginTop: 50}}>
-        {userChoice === true && <YourChoice />}
         <UniversalBtn 
           disabled={userChoice !== null}
           onPress={onPress}
@@ -65,7 +54,6 @@ function FrontSide({ viewHeight, item, userChoice, onPress }) {
           content="correct"
           btnValue={true}
         />
-        {userChoice === false && <YourChoice />}
         <UniversalBtn 
           disabled={userChoice !== null}
           onPress={onPress}
@@ -84,7 +72,7 @@ function BackSide({ item }) {
   return (
     <View style={styles.flex}>
       <Text style={styles.cardTextMain}>
-        {item.explaination}
+        {item.answer}
       </Text>
     </View>
   )
@@ -107,13 +95,12 @@ class FlipCard extends Component {
   }
 
   handlePress = userChoice => {
-    const { dispatch, correctAnswer, id, deckId } = this.props
+    const { dispatch, id, deckId } = this.props
 
     dispatch(handleChooseAnswer(
       userChoice, 
       id, 
       deckId, 
-      correctAnswer, 
       this.handleComplete
     ))
   }
@@ -175,26 +162,18 @@ class FlipCard extends Component {
                   flexGrow: 1,
                 }}
               >
-                {userChoice !== null // Judge flipping is enbale or not
-                  ? <TouchableOpacity 
-                      style={styles.flex} 
-                      onPress={this.handleFlip}
-                      activeOpacity={1}
-                    >
-                      <FrontSide 
-                        viewHeight={viewHeight} 
-                        userChoice={userChoice}
-                        onPress={this.handlePress}
-                        {...others}
-                      />
-                    </TouchableOpacity>
-                  : <FrontSide 
-                      viewHeight={viewHeight} 
-                      userChoice={userChoice}
-                      onPress={this.handlePress}
-                      {...others}
-                    />
-                }
+                <TouchableOpacity 
+                  style={styles.flex} 
+                  onPress={this.handleFlip}
+                  activeOpacity={1}
+                >
+                  <FrontSide 
+                    viewHeight={viewHeight} 
+                    userChoice={userChoice}
+                    onPress={this.handlePress}
+                    {...others}
+                  />
+                </TouchableOpacity>
               </ScrollView>
             : null
           }
@@ -231,16 +210,14 @@ class FlipCard extends Component {
   }
 }
 
-const mapStateToProps = ({ deckStatus }, { item, navigation, id }) => {
+const mapStateToProps = ({ deckStatus }, { navigation, id }) => {
   const { deckId } =  navigation.state.params
   
-  const correctAnswer = item.answer
   const [questionStatus] = deckStatus[deckId].questions.filter(q => q.id === id)
   const { userChoice } = questionStatus
   
   return {
     userChoice,
-    correctAnswer,
     deckId
   }
 }

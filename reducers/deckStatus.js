@@ -47,7 +47,7 @@ export default function deckStatus(state = {}, action) {
         ...state,
         [action.key]: {
           answeredQuestions: state[action.key].answeredQuestions + 1,
-          correctChoices: action.userChoice === action.correctAnswer
+          correctChoices: action.userChoice
             ? state[action.key].correctChoices + 1
             : state[action.key].correctChoices,
           questions: state[action.key].questions.map(q => {

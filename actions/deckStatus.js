@@ -70,19 +70,18 @@ export function addQuestionStatus(key, questionId) {
   }
 }
 
-function chooseAnswer(userChoice, id, key, correctAnswer) {
+function chooseAnswer(userChoice, id, key) {
   return {
     type: CHOOSE_ANSWER,
     userChoice,
     id,
     key,
-    correctAnswer
   }
 }
 
-export function handleChooseAnswer(userChoice, id, key, correctAnswer, cb) {
+export function handleChooseAnswer(userChoice, id, key, cb) {
   return (dispatch, getState) => {
-    dispatch(chooseAnswer(userChoice, id, key, correctAnswer))
+    dispatch(chooseAnswer(userChoice, id, key))
 
     const { deckStatus } = getState()
     const { correctChoices, answeredQuestions, questions } = deckStatus[key]

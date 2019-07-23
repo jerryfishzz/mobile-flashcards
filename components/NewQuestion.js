@@ -1,9 +1,7 @@
 import React, { Component } from 'react'
 import { 
-  View, 
   Text, 
   TextInput, 
-  Switch,
   KeyboardAvoidingView,
   StyleSheet,
   ScrollView,
@@ -12,9 +10,6 @@ import { connect } from 'react-redux'
 
 import { 
   white, 
-  green, 
-  red, 
-  gray, 
   lightGray 
 } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
@@ -28,8 +23,7 @@ class NewQuestion extends Component {
 
   state = {
     question: '',
-    answer: true,
-    explaination: '',
+    answer: '',
     submitting: false
   }
 
@@ -41,14 +35,12 @@ class NewQuestion extends Component {
 
   submit = () => {
     const { deckId, dispatch, goBack } = this.props,
-          { question, answer, explaination } = this.state,
+          { question, answer } = this.state,
 
           newQuestion = {
             id: uuidv1(),
             question,
-            type: 'judgement',
             answer,
-            explaination
           }
 
     this.setState({
@@ -64,7 +56,7 @@ class NewQuestion extends Component {
   }
 
   render() {
-    const { answer, question, explaination, submitting } = this.state
+    const { answer, question, submitting } = this.state
 
     return (
       <KeyboardAvoidingView 
@@ -81,44 +73,16 @@ class NewQuestion extends Component {
             style={styles.input}
           />
           
-          <View style={styles.answer}>
-            <View style={styles.flex}>
-              <Text style={styles.mainText}>Answer</Text>
-            </View>
-            <Text 
-              style={[
-                {color: green, fontStyle: 'italic'},
-                !answer ? {color: gray} : null
-              ]}
-            >
-              True
-            </Text>
-            <Switch
-              onValueChange = {this.toggleSwitch}
-              value = {answer}
-              style={styles.switch}
-              ios_backgroundColor={red}
-            />
-            <Text
-              style={[
-                {color: red, fontStyle: 'italic'},
-                answer ? {color: gray} : null
-              ]}
-            >
-              False
-            </Text>
-          </View>
-
-          <Text style={styles.mainText}>Explaination</Text>
+          <Text style={styles.mainText}>Answer</Text>
           <TextInput
             multiline={true}
-            onChangeText={(explaination) => this.setState({explaination})}
-            value={explaination}
+            onChangeText={(answer) => this.setState({answer})}
+            value={answer}
             style={styles.input}
           />
 
           <UniversalBtn 
-            disabled={!question || !explaination || submitting}
+            disabled={!question || !answer || submitting}
             onPress={this.submit}
             layouts={{marginTop: 50}}
             content="submit"
@@ -164,16 +128,6 @@ const styles = StyleSheet.create({
     borderColor: lightGray,
     fontSize: 15,
     marginBottom: 20
-  },
-  answer: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20
-  },
-  switch: {
-    marginLeft: 10,
-    marginRight: 12
   },
 })
 
