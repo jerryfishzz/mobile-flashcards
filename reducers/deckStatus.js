@@ -5,7 +5,8 @@ import {
   ADD_QUESTION_STATUS, 
   RESET_DECK, 
   CHOOSE_ANSWER, 
-  TOGGLE_Z 
+  TOGGLE_Z, 
+  RESET_Z
 } from "../actions/deckStatus"
 
 export default function deckStatus(state = {}, action) {
@@ -88,6 +89,17 @@ export default function deckStatus(state = {}, action) {
             }
             return q
           })
+        }
+      }
+    case RESET_Z:
+      return {
+        ...state,
+        [action.deckId]: {
+          ...state[action.deckId],
+          questions: state[action.deckId].questions.map(q => ({
+            ...q,
+            zFront: true
+          }))
         }
       }
     default:

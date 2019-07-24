@@ -6,13 +6,13 @@ import { HeaderBackButton } from 'react-navigation';
 
 import QuestionCard from './QuestionCard'
 import { white } from '../utils/colors'
-import { resetDeck } from '../actions/deckStatus'
+import { resetDeck, resetZ } from '../actions/deckStatus'
 
 const { width: viewportWidth } = Dimensions.get('window');
 
 class QuestionStack extends Component {
   static navigationOptions = ({ navigation }) => {
-    const { counts, current } = navigation.state.params
+    const { counts, current, resetZ } = navigation.state.params
 
     return {
       title: `${current} / ${counts}`,
@@ -20,6 +20,7 @@ class QuestionStack extends Component {
         <HeaderBackButton 
           onPress={() => {
             navigation.goBack()
+            resetZ()
           }} 
           title='Deck'
           backTitleVisible={true}
@@ -29,9 +30,14 @@ class QuestionStack extends Component {
     }
   }
 
+  componentDidMount() {
+    const { dispatch, navigation, deckId } = this.props
+    navigation.setParams({ resetZ: () => dispatch(resetZ(deckId)) })
+  }
+
   // Update the header to display which card you are working on when swiping
   updateTitle = slideIndex => {
-    this.props.navigation.setParams({current: (slideIndex + 1).toString()})
+    this.props.navigation.setParams({ current: (slideIndex + 1).toString() })
   }
 
   // Go back to the first card in the carousal and reset the deck to the initial status

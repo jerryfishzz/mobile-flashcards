@@ -5,6 +5,7 @@ export const ADD_QUESTION_STATUS = 'ADD_QUESTION_STATUS'
 export const CHOOSE_ANSWER = 'CHOOSE_ANSWER'
 export const RESET_DECK = 'RESET_DECK'
 export const TOGGLE_Z = 'TOGGLE_Z'
+export const RESET_Z = 'RESET_Z'
 
 function initializeStatus(status) {
   return {
@@ -112,5 +113,12 @@ export function handleToggleZ(deckId, qid, cb) {
   return dispatch => {
     dispatch(toggleZ(deckId, qid))
     cb()
+  }
+}
+
+export function resetZ(deckId) {
+  return {
+    type: RESET_Z,
+    deckId
   }
 }
