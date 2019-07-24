@@ -2,29 +2,15 @@
 
 This app is built on the requirements in the rubric but has its own features when implementing some functionalities. Details will be discussed later.
 
-## Existing issues
+## Installation and lauch
 
-### Notifications
+Just `yarn install` and `yarn start`
 
-There will be a warning when the app deals with notifications. The code follows the tutorial strictly but a warning occurs like this:
-
-> Ability to schedule an automatically repeated notification is deprecated on iOS and will be removed in the next SDK release.
-
-Any advice is appreciated.
-
-### No Android tested
-
-The developing environment uses Expo and is only tested on iOS platform. No Andriod simulator (not installed) or Android devices involved (no available Android devices can be used).
-
-## Features implemented differently from the rubric
-
-- The New Question view also includes an explanation input field. Just giving the answer right or wrong is not helpful enough.
+## Features
 
 - To make the app more friendly to its users, carousal and flipping are implemented as operation gestures.
 
   Users can swipe left or right to the previous or next question respectly.
-
-  Once users choose, the correct answer will show automatically on the front side of the card while the flipping function is enabled. Users can see the explanation by flipping the card to the back side.
 
   If the question has been answered, the choosing buttons will be disabled only if users reset the deck.
 
@@ -40,11 +26,21 @@ The developing environment uses Expo and is only tested on iOS platform. No Andr
   
   Another is **deckStatus** for individual deck information, such as flipping status, counts of correct answer, the user choice for a question, etc. This is just a status tracker for decks. No commmunication with the database.
 
-## Installation and lauch
+## Existing issues
 
-Just `yarn install` and `yarn start`
+### Notifications
 
-## Other libraries included
+There will be a warning when the app deals with notifications. The code follows the tutorial strictly but a warning occurs like this:
+
+> Ability to schedule an automatically repeated notification is deprecated on iOS and will be removed in the next SDK release.
+
+Any advice is appreciated.
+
+### No Android tested
+
+The developing environment uses Expo and is only tested on iOS platform. No Andriod simulator (not installed) or Android devices involved (no available Android devices can be used).
+
+## Built With
 
 - **[Ramda]**  A useful JS library with functional programming methodology.
 
