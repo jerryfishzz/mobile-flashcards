@@ -10,7 +10,9 @@ Just `yarn install` and `yarn start`
 
 To make the app more friendly to its users, carousal and flipping are implemented as operation gestures.
 
-Users can swipe left or right to the previous or next question respectly.
+- Users can swipe left or right to the previous or next question respectly.
+
+- Clicking card can flip it to the other side.
 
 ## Existing issues
 
