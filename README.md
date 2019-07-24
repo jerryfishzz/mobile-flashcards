@@ -14,6 +14,8 @@ To make the app more friendly to its users, carousal and flipping are implemente
 
 - Clicking card can flip it to the other side.
 
+- Users can create diffrent decks to categorize question types.
+
 ## Existing issues
 
 ### No Android tested
