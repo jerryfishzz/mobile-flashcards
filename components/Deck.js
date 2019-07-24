@@ -58,12 +58,20 @@ class Deck extends Component {
   }
 
   confirmDelete = () => {
+    const { dispatch, deck, deckId, goHome } = this.props
+
     Alert.alert(
       '',
       'Are you sure to delete it?',
       [
         {text: 'NO', style: 'cancel'},
-        {text: 'YES', onPress: () => this.props.remove()},
+        {
+          text: 'YES', 
+          onPress: () => {
+            return dispatch(removeDeckAndGoHome(deckId, deck, goHome))
+              .catch(err => alert(err))
+          }
+        },
       ]
     )
   }
@@ -129,25 +137,30 @@ const mapStateToProps = ({ decks, deckStatus }, { navigation }) => {
         ? 'check results'
         : 'resume quiz'
 
+  const goHome = () => navigation.dispatch(NavigationActions.navigate({ 
+    routeName: 'Decks'
+  }))
+
   return {
     deckId,
     deck,
     content,
-    isResetable: !R.all(isNull)(choices) // Check whether to show the reset button 
+    isResetable: !R.all(isNull)(choices), // Check whether to show the reset button
+    goHome
   }
 }
 
-const mapDispatchToProps = (dispatch, { navigation }) => {
-  const { deckId } = navigation.state.params
-  const goHome = () => navigation.dispatch(NavigationActions.navigate({ 
-      routeName: 'Decks'
-    }))
+// const mapDispatchToProps = (dispatch, { navigation }) => {
+//   const { deckId } = navigation.state.params
+//   const goHome = () => navigation.dispatch(NavigationActions.navigate({ 
+//       routeName: 'Decks'
+//     }))
 
-  return {
-    remove: () => dispatch(removeDeckAndGoHome(deckId, goHome)),
-    dispatch
-  }
-}
+//   return {
+//     remove: () => dispatch(removeDeckAndGoHome(deckId, goHome)),
+//     dispatch
+//   }
+// }
 
 const styles = StyleSheet.create({
   flex: {
@@ -182,4 +195,4 @@ const styles = StyleSheet.create({
   }
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(Deck)
+export default connect(mapStateToProps)(Deck)

@@ -24,6 +24,7 @@ class Dashboard extends Component {
         dispatch(receiveDecks(decks))
         dispatch(handleInitializeStatus(decks))
       })
+      .catch(() => alert('Initialize error'))
   }
 
   render() {

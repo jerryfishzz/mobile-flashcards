@@ -27,12 +27,6 @@ class NewQuestion extends Component {
     submitting: false
   }
 
-  toggleSwitch = () => {
-    this.setState(prevState => ({
-      answer: !prevState.answer
-    }))
-  }
-
   submit = () => {
     const { deckId, dispatch, goBack } = this.props,
           { question, answer } = this.state,
@@ -52,6 +46,7 @@ class NewQuestion extends Component {
             submitting: false // Enable submit button when submitting done
           })
         })
+        .catch(err => alert(err))
     })
   }
 

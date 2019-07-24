@@ -10,7 +10,7 @@ import {
 } from 'react-native'
 import { connect } from 'react-redux'
 
-import { white, purple, green, red } from '../utils/colors'
+import { white, green, red } from '../utils/colors'
 import UniversalBtn from './UniversalBtn'
 import { handleChooseAnswer, handleToggleZ } from '../actions/deckStatus';
 import { clearLocalNotification, setLocalNotification } from '../utils/helpers';

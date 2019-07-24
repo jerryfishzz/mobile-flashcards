@@ -43,28 +43,36 @@ class NewDeck extends Component {
     this.setState(
       {submitting: true}, 
       async () => {
-        const decks = await getDecks()
-        const keys = Object.keys(decks).map(key => R.toLower(key))
+        try {
+          const decks = await getDecks()
+          const keys = Object.keys(decks).map(key => R.toLower(key))
 
-        if (keys.indexOf(R.toLower(key)) !== -1) {
-          alert('Deck with the same name already exists')
+          if (keys.indexOf(R.toLower(key)) !== -1) {
+            alert('Deck with the same name already exists')
 
-          this.setState({
-            submitting: false,
-            deck: ''
-          })
-        } else {
-          await dispatch(handleAddDeck({ key, entry }))
-            
-          this.setState({
-            submitting: false,
-            deck: ''
-          }, () => {
-            navigation.navigate(
-              'Deck', 
-              { deckId: key }
-            )
-          })
+            this.setState({
+              submitting: false,
+              deck: ''
+            })
+          } else {
+            try {
+              await dispatch(handleAddDeck({ key, entry }))
+              
+              this.setState({
+                submitting: false,
+                deck: ''
+              }, () => {
+                navigation.navigate(
+                  'Deck', 
+                  { deckId: key }
+                )
+              })
+            } catch(err) {
+              alert(err)
+            }
+          }
+        } catch(err) {
+          alert(err)
         }
       }
     )
