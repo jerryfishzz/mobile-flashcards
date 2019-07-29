@@ -22,6 +22,10 @@ To make the app more friendly to its users, carousal and flipping are implemente
 
 The developing environment uses Expo and is only tested on iOS platform.
 
+### Problems when using Snack
+
+Sometimes the app will get stuck at the homepage just showing **loading**, or occurs an error almost covering the whole screen. Those never happen when I use my computer as the server to run the app. Try to refresh the webpage directly to solve those problems.
+
 ## Built With
 
 - **[Ramda]**  A useful JS library with functional programming methodology.
