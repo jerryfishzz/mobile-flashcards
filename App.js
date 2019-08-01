@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, StatusBar } from 'react-native'
-import { createStore } from 'redux'
+import { createStore, compose } from 'redux'
 import { Provider } from 'react-redux'
 import Constants from 'expo-constants'
 
@@ -18,6 +18,8 @@ function FlashcardStatusBar({ backgroundColor, ...props }) {
   )
 }
 
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose
+
 export default class App extends Component {
   componentDidMount() {
     setLocalNotification()
@@ -25,7 +27,7 @@ export default class App extends Component {
 
   render() {
     return (
-      <Provider store={createStore(reducer, middleware)}>
+      <Provider store={createStore(reducer, composeEnhancers(middleware))}>
         <View style={styles.flex}>
           <FlashcardStatusBar backgroundColor={purple} barStyle='light-content' />
           <MainNavigator />
